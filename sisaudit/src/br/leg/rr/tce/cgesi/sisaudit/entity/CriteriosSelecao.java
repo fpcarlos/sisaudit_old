@@ -25,7 +25,7 @@ public class CriteriosSelecao implements Serializable {
 	private String nome;
 
 	//bi-directional many-to-one association to Auditoria
-	@OneToMany(mappedBy="criteriosSelecao")
+	//@OneToMany(mappedBy="criteriosSelecao")
 	private List<Auditoria> auditorias;
 
 	public CriteriosSelecao() {
@@ -54,7 +54,7 @@ public class CriteriosSelecao implements Serializable {
 	public void setAuditorias(List<Auditoria> auditorias) {
 		this.auditorias = auditorias;
 	}
-
+/*
 	public Auditoria addAuditoria(Auditoria auditoria) {
 		getAuditorias().add(auditoria);
 		auditoria.setCriteriosSelecao(this);
@@ -68,7 +68,7 @@ public class CriteriosSelecao implements Serializable {
 
 		return auditoria;
 	}
-
+*/
 	@Override
 	public int hashCode() {
 		final int prime = 31;
