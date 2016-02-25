@@ -20,7 +20,6 @@ import javax.persistence.Temporal;
 @Dependent
 @Entity
 @Table(name = "v_unidade_gestora", schema = "comum")
-//@NamedQuery(name="UnidadeGestora.findAll", query="SELECT u FROM UnidadeGestora u")
 public class UnidadeGestora implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
