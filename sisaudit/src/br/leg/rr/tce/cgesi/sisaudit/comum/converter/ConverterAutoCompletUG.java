@@ -11,16 +11,18 @@ import br.leg.rr.tce.cgesi.sisaudit.comum.entity.UnidadeGestora;
 public class ConverterAutoCompletUG implements Converter {
 
 	@Override
-	public Object getAsObject(FacesContext context, UIComponent component, String value) {
+	public Object getAsObject(FacesContext arg0, UIComponent arg1, String arg2) {
 		UnidadeGestora unidG = new UnidadeGestora();
-		
 		return unidG;
 	}
 
 	@Override
-	public String getAsString(FacesContext context, UIComponent component, Object value) {
-		return "";
+	public String getAsString(FacesContext arg0, UIComponent arg1, Object arg2) {
+		
+		return " ";
 	}
+
+	
 
 	
 	
