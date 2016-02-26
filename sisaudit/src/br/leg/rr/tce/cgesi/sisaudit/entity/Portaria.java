@@ -1,11 +1,26 @@
 package br.leg.rr.tce.cgesi.sisaudit.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.Dependent;
-import javax.persistence.*;
-import java.util.Date;
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import br.leg.rr.tce.cgesi.sisaudit.comum.entity.UnidadeGestora;
 
 
 /**
@@ -94,14 +109,133 @@ public class Portaria implements Serializable {
 
 	//bi-directional many-to-one association to PortariasAndamento
 	@OneToMany(mappedBy="portaria")
-	private List<PortariasAndamento> portariasAndamentos;
+	private List<PortariasAndamento> portariasAndamentos = new ArrayList<PortariasAndamento>();
 
 	//bi-directional many-to-one association to UnidadeGestoraPortaria
 	@OneToMany(mappedBy="portaria")
-	private List<UnidadeGestoraPortaria> unidadeGestoraPortarias;
+	private List<UnidadeGestoraPortaria> unidadeGestoraPortarias = new ArrayList<UnidadeGestoraPortaria>();
+	
+	
+	@Transient
+	private List<UnidadeGestoraPortaria> listaUnidadeGestoraDaPortaria = new ArrayList<UnidadeGestoraPortaria>();
+	
+	@Transient
+	private boolean mostraCampo; 
+
+	// @Transient
+	// private List<UnidadeGestoraPortaria> unidadeGestoraPortariaList = new
+	// ArrayList<UnidadeGestoraPortaria>();
+
+	@Transient
+	private List<Auditoria> auditoriaList = new ArrayList<Auditoria>();
+
+	@Transient
+	private List<UnidadeGestoraPortaria> unidadeGestoraPortariaExcluidas = new ArrayList<UnidadeGestoraPortaria>();
+	@Transient
+	private List<UnidadeGestora> listaUnidadeGestoraTmp = new ArrayList<UnidadeGestora>();
+
+	@Transient
+	private List<EquipeFiscalizacao> equipeFiscalizacaoList = new ArrayList<EquipeFiscalizacao>();
+
+	
 
 	public Portaria() {
 	}
+	
+	
+	public void criarListaUGAuditoria() {
+		try {
+			unidadeGestoraPortarias = new ArrayList<UnidadeGestoraPortaria>();
+			Map<Integer, UnidadeGestora> mapUGA = new HashMap<Integer, UnidadeGestora>();
+			List<UnidadeGestoraPortaria> listUGAExcluir = new ArrayList<UnidadeGestoraPortaria>();
+			// Map<Integer, UnidadeGestora> mapUGAExcluir = new HashMap<Integer,
+			// UnidadeGestora>();
+			Map<Integer, UnidadeGestora> mapUGSalvar = new HashMap<Integer, UnidadeGestora>();
+
+			for (UnidadeGestoraPortaria tmp1 : unidadeGestoraPortarias) {
+				mapUGA.put(tmp1.getUnidadeGestora().getId(), tmp1.getUnidadeGestora());
+			}
+			for (UnidadeGestora tmp1 : listaUnidadeGestoraTmp) {
+				if (mapUGA.containsKey(tmp1.getId())) {
+					break;
+				}
+				mapUGSalvar.put(tmp1.getId(), tmp1);
+				UnidadeGestoraPortaria ugp = new UnidadeGestoraPortaria();
+				ugp.setPortaria(this);
+				ugp.setUnidadeGestora(tmp1);
+				unidadeGestoraPortarias.add(ugp);
+			}
+			for (UnidadeGestoraPortaria tmp1 : unidadeGestoraPortariaExcluidas) {
+				if (mapUGSalvar.containsKey(tmp1.getId())) {
+					break;
+				}
+				listUGAExcluir.add(tmp1);
+
+			}
+
+			unidadeGestoraPortariaExcluidas = new ArrayList<UnidadeGestoraPortaria>();
+			unidadeGestoraPortariaExcluidas = listUGAExcluir;
+
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	public void selecionarUGA(UnidadeGestora entity) {
+		boolean sc = true;
+		for (UnidadeGestoraPortaria tmp : unidadeGestoraPortarias) {
+			if (tmp.getUnidadeGestora().getId().equals(entity.getId())) {
+				sc = false;
+				break;
+			}
+		}
+		for (UnidadeGestoraPortaria tmp : unidadeGestoraPortariaExcluidas) {
+			if (tmp.getUnidadeGestora().getId().equals(entity.getId())) {
+				unidadeGestoraPortariaExcluidas.remove(tmp);
+			}
+		}
+		if (sc) {
+			UnidadeGestoraPortaria ugp = new UnidadeGestoraPortaria();
+			ugp.setPortaria(this);
+			ugp.setUnidadeGestora(entity);
+			unidadeGestoraPortarias.add(ugp);
+		}
+
+	}
+
+	public void adincionarNaListaExcluidos(UnidadeGestora entity) {
+		for (UnidadeGestoraPortaria tmp : unidadeGestoraPortarias) {
+			if (tmp.getUnidadeGestora().getId().equals(entity.getId())) {
+				unidadeGestoraPortariaExcluidas.add(tmp);
+				break;
+			}
+		}
+	}
+
+	// adicionando na lista excluidas e removendo da lista temporari que sera
+	// gravada
+	public void removerUGA(UnidadeGestora aux) {
+		for (UnidadeGestoraPortaria tmp1 : unidadeGestoraPortarias) {
+			if (tmp1.getUnidadeGestora().getId() == aux.getId()) {
+				unidadeGestoraPortariaExcluidas.add(tmp1);
+				break;
+			}
+		}
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	public Integer getId() {
 		return this.id;
@@ -287,6 +421,47 @@ public class Portaria implements Serializable {
 		this.portariasAndamentos = portariasAndamentos;
 	}
 
+	
+	public List<UnidadeGestoraPortaria> getListaUnidadeGestoraDaPortaria() {
+		return listaUnidadeGestoraDaPortaria;
+	}
+
+	public void setListaUnidadeGestoraDaPortaria(List<UnidadeGestoraPortaria> listaUnidadeGestoraDaPortaria) {
+		this.listaUnidadeGestoraDaPortaria = listaUnidadeGestoraDaPortaria;
+	}
+
+	public List<UnidadeGestoraPortaria> getUnidadeGestoraPortariaExcluidas() {
+		return unidadeGestoraPortariaExcluidas;
+	}
+
+	public void setUnidadeGestoraPortariaExcluidas(List<UnidadeGestoraPortaria> unidadeGestoraPortariaExcluidas) {
+		this.unidadeGestoraPortariaExcluidas = unidadeGestoraPortariaExcluidas;
+	}
+
+	public List<UnidadeGestora> getListaUnidadeGestoraTmp() {
+		return listaUnidadeGestoraTmp;
+	}
+
+	public void setListaUnidadeGestoraTmp(List<UnidadeGestora> listaUnidadeGestoraTmp) {
+		this.listaUnidadeGestoraTmp = listaUnidadeGestoraTmp;
+	}
+
+	/*
+	 * public List<UnidadeGestoraPortaria> getUnidadeGestoraPortariaList() {
+	 * return unidadeGestoraPortariaList; }
+	 * 
+	 * public void setUnidadeGestoraPortariaList(List<UnidadeGestoraPortaria>
+	 * unidadeGestoraPortariaList) { this.unidadeGestoraPortariaList =
+	 * unidadeGestoraPortariaList; }
+	 */
+	public List<Auditoria> getAuditoriaList() {
+		return auditoriaList;
+	}
+
+	public void setAuditoriaList(List<Auditoria> auditoriaList) {
+		this.auditoriaList = auditoriaList;
+	}
+
 	public PortariasAndamento addPortariasAndamento(PortariasAndamento portariasAndamento) {
 		getPortariasAndamentos().add(portariasAndamento);
 		portariasAndamento.setPortaria(this);
@@ -309,6 +484,14 @@ public class Portaria implements Serializable {
 		this.unidadeGestoraPortarias = unidadeGestoraPortarias;
 	}
 
+	public List<EquipeFiscalizacao> getEquipeFiscalizacaoList() {
+		return equipeFiscalizacaoList;
+	}
+
+	public void setEquipeFiscalizacaoList(List<EquipeFiscalizacao> equipeFiscalizacaoList) {
+		this.equipeFiscalizacaoList = equipeFiscalizacaoList;
+	}
+
 	public UnidadeGestoraPortaria addUnidadeGestoraPortaria(UnidadeGestoraPortaria unidadeGestoraPortaria) {
 		getUnidadeGestoraPortarias().add(unidadeGestoraPortaria);
 		unidadeGestoraPortaria.setPortaria(this);
@@ -322,5 +505,36 @@ public class Portaria implements Serializable {
 
 		return unidadeGestoraPortaria;
 	}
+
+	public String getListaSiglaUnidadeGestoraDaPortaria(){
+		String temp="";
+		if(!listaUnidadeGestoraDaPortaria.isEmpty()){
+			
+			for (UnidadeGestoraPortaria ptemp : listaUnidadeGestoraDaPortaria) {
+				if(temp.length()>0){
+					temp=temp+", "+ptemp.getUnidadeGestora().getSigla();
+				}else{
+					temp=ptemp.getUnidadeGestora().getSigla();
+				}
+				setMostraCampo(true);
+			}			
+		}else{
+			setMostraCampo(false);
+			temp="";
+		}
+		
+		return temp;
+	}
+
+	public boolean isMostraCampo() {
+		return mostraCampo;
+	}
+
+	public void setMostraCampo(boolean mostraCampo) {
+		this.mostraCampo = mostraCampo;
+	}
+
+	
+	
 
 }
