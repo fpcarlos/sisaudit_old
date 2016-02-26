@@ -3,11 +3,9 @@ package br.leg.rr.tce.cgesi.sisaudit.ejb;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
-import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-@Stateless
 public class AbstractEjb {
 
 	private <T> String nomeTabela(Class<T> clazz) {

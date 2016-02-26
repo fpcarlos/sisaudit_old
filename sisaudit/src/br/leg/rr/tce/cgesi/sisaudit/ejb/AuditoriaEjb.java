@@ -16,7 +16,7 @@ import br.leg.rr.tce.cgesi.sisaudit.entity.UnidadeGestoraAuditoria;
 /**
  * Session Bean implementation class AuditoriaEjb
  */
-@Stateless
+@Stateless(mappedName="AuditoriaEjb")
 public class AuditoriaEjb extends AbstractEjb implements Serializable {
 	private static final long serialVersionUID = 1L;
 

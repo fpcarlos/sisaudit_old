@@ -9,7 +9,7 @@ import javax.persistence.PersistenceContext;
 
 import br.leg.rr.tce.cgesi.sisaudit.comum.entity.UnidadeGestora;
 
-@Stateless
+@Stateless(mappedName="UnidadeGestoraEjb")
 public class UnidadeGestoraEjb extends AbstractEjb implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@PersistenceContext
