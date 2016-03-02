@@ -8,8 +8,8 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
 
 import br.leg.rr.tce.cgesi.sisaudit.comum.entity.UnidadeGestora;
 import br.leg.rr.tce.cgesi.sisaudit.ejb.SistemaEjb;
@@ -22,9 +22,8 @@ import br.leg.rr.tce.cgesi.sisaudit.entity.TipoFiscalizacao;
 import br.leg.rr.tce.cgesi.sisaudit.entity.UnidadeFiscalizadora;
 import br.leg.rr.tce.cgesi.sisaudit.entity.UnidadeGestoraAuditoria;
 
-@Named
-//@ApplicationScoped
-@SessionScoped
+@Startup
+@Singleton
 public class SistemaBean extends AbstractBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
@@ -59,6 +58,7 @@ public class SistemaBean extends AbstractBean implements Serializable {
 			getUnidadeGestoraList();
 			getUnidadeFiscalizadoraList();
 			getCriteriosSelecaoList();
+			getTipoFiscalizacaoList();
 			
 		} catch (Exception e) {
 			e.printStackTrace();

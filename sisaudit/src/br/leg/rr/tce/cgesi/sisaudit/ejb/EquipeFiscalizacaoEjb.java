@@ -50,7 +50,23 @@ public class EquipeFiscalizacaoEjb extends AbstractEjb implements Serializable {
 			e.printStackTrace();
 			throw new Exception(" Erro" + e.getMessage());
 		}
+	}
+	
+	public List<EquipeFiscalizacao> findIdPortaria(Integer id) throws Exception {
+		try {
+			String sql = "select * from scsisaudit.equipe_fiscalizacao where id_portaria = "+ id +" ";
+			List<EquipeFiscalizacao> listaEquipeFiscalizacao = executaSqlNativo(sql, EquipeFiscalizacao.class, entityManager);
+			return listaEquipeFiscalizacao;
+
+		} catch (RuntimeException re) {
+			re.printStackTrace();
+			throw new Exception(" Erro" + re.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception(" Erro" + e.getMessage());
+		}
 
 	}
+
 
 }

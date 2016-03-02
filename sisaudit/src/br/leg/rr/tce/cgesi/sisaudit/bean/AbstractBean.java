@@ -1,15 +1,11 @@
 package br.leg.rr.tce.cgesi.sisaudit.bean;
 
-import java.io.Serializable;
-
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
 
-public class AbstractBean implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class AbstractBean  {
 
 	public void getId() {
 		String id = FacesContext.getCurrentInstance().getExternalContext()
