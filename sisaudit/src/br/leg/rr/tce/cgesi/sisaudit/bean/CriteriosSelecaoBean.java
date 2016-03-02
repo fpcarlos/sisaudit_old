@@ -12,7 +12,7 @@ import br.leg.rr.tce.cgesi.sisaudit.entity.CriteriosSelecao;
 
 @Named
 @RequestScoped
-public class CriteriosSelecaoBean implements Serializable {
+public class CriteriosSelecaoBean extends AbstractBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Inject

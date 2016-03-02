@@ -9,9 +9,12 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.primefaces.event.FlowEvent;
+
 import com.sun.enterprise.universal.StringUtils;
 
 import br.leg.rr.tce.cgesi.sisaudit.comum.entity.UnidadeGestora;
+import br.leg.rr.tce.cgesi.sisaudit.comum.util.Util;
 import br.leg.rr.tce.cgesi.sisaudit.ejb.AuditoriaEjb;
 import br.leg.rr.tce.cgesi.sisaudit.ejb.EquipeFiscalizacaoEjb;
 import br.leg.rr.tce.cgesi.sisaudit.ejb.PortariaEjb;
@@ -21,6 +24,7 @@ import br.leg.rr.tce.cgesi.sisaudit.entity.Auditoria;
 import br.leg.rr.tce.cgesi.sisaudit.entity.EquipeFiscalizacao;
 import br.leg.rr.tce.cgesi.sisaudit.entity.Portaria;
 import br.leg.rr.tce.cgesi.sisaudit.entity.Servidor;
+import br.leg.rr.tce.cgesi.sisaudit.entity.TipoFiscalizacao;
 import br.leg.rr.tce.cgesi.sisaudit.entity.UnidadeGestoraAuditoria;
 import br.leg.rr.tce.cgesi.sisaudit.entity.UnidadeGestoraPortaria;
 
@@ -69,6 +73,7 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 	private List<Servidor> servidorList = new ArrayList<Servidor>();
 	private List<EquipeFiscalizacao> equipeFiscalizacaoList = new ArrayList<EquipeFiscalizacao>();
 	private List<Servidor> servidorAutoridadeList = new ArrayList<Servidor>();
+	private List<TipoFiscalizacao> tipoFiscalizacaoList = new ArrayList<TipoFiscalizacao>();
 	
 	private String msgTexto;
 
@@ -85,6 +90,10 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 	public String abrirListaPortaria() throws Exception {
 		portariaList = new ArrayList<Portaria>();
 		portariaList = portariaEjb.listaPortaria();
+		
+		
+		
+		
 
 		//List<UnidadeGestoraPortaria> listaUGP = new ArrayList<UnidadeGestoraPortaria>();
 		//listaUGP=unidadeGestoraPortariaEjb.findIAll();
@@ -102,6 +111,9 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 			unidadeGestoraDaAuditoria = new ArrayList<UnidadeGestora>();
 			unidadeGestoraSelecionadas = new ArrayList<UnidadeGestora>();
 			unidadeGestoraDaPortaria = new ArrayList<UnidadeGestora>();
+			
+			tipoFiscalizacaoList = new ArrayList<TipoFiscalizacao>();
+			tipoFiscalizacaoList = sistemaBean.getTipoFiscalizacaoList();
 			
 			if(portaria.getIdAuditoria()!=null){
 				auditoria = new Auditoria();
@@ -151,7 +163,34 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 		}
 	}
 
-	
+	public String onFlowProcess(FlowEvent event) {
+		if (skip) {
+			skip = false; // reset in case user goes back
+			return "confirm";
+		} else {
+			/*
+			if (event.getNewStep().equals("equipe")) {
+				this.selecionandoUGP();
+			} else {
+				this.salvarMinutaPortaria();
+			}
+			*/
+			return event.getNewStep();
+		}
+	}
+
+	public void dateChange() {
+		if (portaria.getPlanInicio() != null && portaria.getPlanFim() != null) {
+			portaria.setPlanDiasUteis(Util.diasEntreDatas(portaria.getPlanInicio(), portaria.getPlanFim()));
+		}
+		if (portaria.getExecInicio() != null && portaria.getExecFim() != null) {
+			portaria.setExecDiasUteis(Util.diasEntreDatas(portaria.getExecInicio(), portaria.getExecFim()));
+		}
+		if (portaria.getRelaInicio() != null && portaria.getRelaFim() != null) {
+			portaria.setRelaDiasUteis(Util.diasEntreDatas(portaria.getRelaInicio(), portaria.getRelaFim()));
+		}
+	}
+
 
 	public Portaria getPortaria() {
 		return portaria;
@@ -271,6 +310,14 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 
 	public void setEquipeFiscalizacaoList(List<EquipeFiscalizacao> equipeFiscalizacaoList) {
 		this.equipeFiscalizacaoList = equipeFiscalizacaoList;
+	}
+
+	public List<TipoFiscalizacao> getTipoFiscalizacaoList() {
+		return tipoFiscalizacaoList;
+	}
+
+	public void setTipoFiscalizacaoList(List<TipoFiscalizacao> tipoFiscalizacaoList) {
+		this.tipoFiscalizacaoList = tipoFiscalizacaoList;
 	}
 
 
