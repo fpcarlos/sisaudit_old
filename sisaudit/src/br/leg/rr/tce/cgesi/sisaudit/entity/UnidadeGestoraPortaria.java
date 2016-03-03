@@ -19,7 +19,7 @@ import br.leg.rr.tce.cgesi.sisaudit.comum.entity.UnidadeGestora;
  * 
  */
 @Entity
-@Table(name="unidade_gestora_portaria")
+@Table(name="unidade_gestora_portaria", schema="scsisaudit")
 @NamedQuery(name="UnidadeGestoraPortaria.findAll", query="SELECT u FROM UnidadeGestoraPortaria u")
 public class UnidadeGestoraPortaria implements Serializable {
 	private static final long serialVersionUID = 1L;

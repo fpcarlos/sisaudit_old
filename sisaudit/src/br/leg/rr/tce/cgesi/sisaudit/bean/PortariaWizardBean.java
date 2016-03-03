@@ -2,7 +2,9 @@ package br.leg.rr.tce.cgesi.sisaudit.bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
@@ -10,6 +12,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.event.FlowEvent;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.event.UnselectEvent;
 
 import com.sun.enterprise.universal.StringUtils;
 
@@ -88,24 +92,46 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 	}
 	
 	public String abrirListaPortaria() throws Exception {
-		portariaList = new ArrayList<Portaria>();
+		portaria = new Portaria();
+		portariaList = new ArrayList<>();
 		portariaList = portariaEjb.listaPortaria();
 		
-		
-		
-		
-
-		//List<UnidadeGestoraPortaria> listaUGP = new ArrayList<UnidadeGestoraPortaria>();
-		//listaUGP=unidadeGestoraPortariaEjb.findIAll();
-
 		portaria.setMostraCampo(true);
+		
+		portaria.setMostraCampo(true);
+		Map<Integer, Portaria> mapPortaria = new HashMap<Integer, Portaria>();
+		String listaId = "";
+		List<UnidadeGestoraPortaria> listaUGP = new ArrayList<UnidadeGestoraPortaria>();
+		listaUGP=unidadeGestoraPortariaEjb.findIAll();
+
+		for (Portaria ptemp : portariaList) {
+			mapPortaria.put(ptemp.getId(), ptemp);
+
+			if (listaId.length() > 0) {
+				listaId = listaId + "," + ptemp.getId();
+			} else {
+				listaId = ptemp.getId().toString();
+			}
+
+		}
+		listaUGP = unidadeGestoraPortariaEjb.listaUGDasPortaria(listaId);
+
+		for (UnidadeGestoraPortaria ltemp : listaUGP) {
+			mapPortaria.get(ltemp.getPortaria().getId()).getListaUnidadeGestoraDaPortaria().add(ltemp);
+
+			ltemp.setUnidadeGestora(sistemaBean.getUnidadeGestoraMap().get(ltemp.getUnidadeGestora()));
+			ltemp.setPortaria(mapPortaria.get(ltemp.getPortaria()));
+		}
+
+		
 
 		return redirect("/sistema/portaria/listaPortarias.xhtml");
 	}
 	
 	public String editarWizardPortaria(Portaria aux) {
 		try {
-			portaria = aux;
+			portaria = new Portaria();
+			portaria = portariaEjb.pegarPortaria(aux.getId());
 			servidorAutoridadeList = new ArrayList<Servidor>();
 
 			unidadeGestoraDaAuditoria = new ArrayList<UnidadeGestora>();
@@ -162,19 +188,83 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 			return null;
 		}
 	}
+	
+	// prepara editar portaria de auditoria
+		public void selecionandoUGP() {
+			try {
+				unidadeGestoraPortariaList = new ArrayList<UnidadeGestoraPortaria>();
+				unidadeGestoraPortariaList2 = new ArrayList<UnidadeGestoraPortaria>();
 
+				Map<Integer, UnidadeGestora> mapUGS = new HashMap<Integer, UnidadeGestora>();
+				Map<Integer, UnidadeGestora> mapUGE = new HashMap<Integer, UnidadeGestora>();
+				Map<Integer, UnidadeGestora> mapUGP = new HashMap<Integer, UnidadeGestora>();
+				// unidades selecionadas
+				for (UnidadeGestora x : unidadeGestoraSelecionadas) {
+					mapUGS.put(x.getId(), x);
+					UnidadeGestoraPortaria ugp = new UnidadeGestoraPortaria();
+					ugp.setPortaria(portaria);
+					ugp.setUnidadeGestora(x);
+					unidadeGestoraPortariaList.add(ugp);
+				}
+				// da auditoria
+				if (portaria.getIdAuditoria() != null) {
+					for (UnidadeGestoraAuditoria x : portaria.getAuditoria().getUnidadeGestoraAuditorias()) {
+						mapUGE.put(x.getUnidadeGestora().getId(), x.getUnidadeGestora());
+						UnidadeGestoraPortaria ugp = new UnidadeGestoraPortaria();
+						ugp.setPortaria(portaria);
+						ugp.setUnidadeGestora(x.getUnidadeGestora());
+						// portaria.getUnidadeGestoraPortariaExcluidas().add(ugp);
+					}
+				}
+				// daportaria
+				for (UnidadeGestoraPortaria x : portaria.getUnidadeGestoraPortarias()) {
+					mapUGP.put(x.getUnidadeGestora().getId(), x.getUnidadeGestora());
+					UnidadeGestoraPortaria ugp = new UnidadeGestoraPortaria();
+					ugp.setId(x.getId());
+					ugp.setPortaria(portaria);
+					ugp.setUnidadeGestora(x.getUnidadeGestora());
+					unidadeGestoraPortariaList2.add(ugp);
+					if (mapUGS.containsKey(x.getUnidadeGestora().getId())) {
+						portaria.removeUnidadeGestoraPortaria(ugp);
+					}
+				}
+				portaria.setUnidadeGestoraPortarias(getUnidadeGestoraPortariaList());
+				portaria.setUnidadeGestoraPortariaExcluidas(unidadeGestoraPortariaList2);
+				portaria.setEquipeFiscalizacaoList(getEquipeFiscalizacaoList());
+				this.salvarMinutaPortaria();
+				// this.salvar();
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				showFacesMessage(e.getMessage(), 4);
+			}
+
+		}
+
+
+	public void salvarMinutaPortaria() {
+		try {
+			portariaEjb.salvarMinuta(portaria);
+		} catch (Exception e) {
+			e.printStackTrace();
+			showFacesMessage(e.getMessage(), 4);
+		}
+	}
+
+	
 	public String onFlowProcess(FlowEvent event) {
 		if (skip) {
 			skip = false; // reset in case user goes back
 			return "confirm";
 		} else {
-			/*
+			
 			if (event.getNewStep().equals("equipe")) {
 				this.selecionandoUGP();
+				//this.salvarMinutaPortaria();
 			} else {
 				this.salvarMinutaPortaria();
 			}
-			*/
+			
 			return event.getNewStep();
 		}
 	}
@@ -190,6 +280,28 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 			portaria.setRelaDiasUteis(Util.diasEntreDatas(portaria.getRelaInicio(), portaria.getRelaFim()));
 		}
 	}
+	// pega evento autocomplet remo��o de sele��o e atualiza listas
+		public void unselectUGA(final UnselectEvent event) {
+			try {
+				final UnidadeGestora tmp = (UnidadeGestora) event.getObject();
+				portaria.adincionarNaListaExcluidos(tmp);
+				unidadeGestoraLista.add(tmp);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+		}
+
+		// pega evento autocomplet sele��o de objetos e atualiza listas
+		public void selectUGA(final SelectEvent event) {
+			try {
+				final UnidadeGestora tmp = (UnidadeGestora) event.getObject();
+				unidadeGestoraLista.remove(tmp);
+				portaria.selecionarUGA(tmp);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+
+		}
 
 
 	public Portaria getPortaria() {
