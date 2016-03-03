@@ -23,6 +23,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import br.leg.rr.tce.cgesi.sisaudit.comum.entity.UnidadeGestora;
+import br.leg.rr.tce.cgesi.sisaudit.ejb.PortariaEjb;
 
 /**
  * The persistent class for the portaria database table.
@@ -253,11 +254,13 @@ public class Portaria implements Serializable {
 
 	public String getListaSiglaUnidadeGestoraDaPortaria() {
 		String temp = "";
+		Integer nId = this.getId();
+		
 		//listaUnidadeGestoraDaPortaria = this.getListaUnidadeGestoraDaPortaria();
 
 		// if(!listaUnidadeGestoraDaPortaria.isEmpty()){
 
-		for (UnidadeGestoraPortaria ptemp : listaUnidadeGestoraDaPortaria) {
+		for (UnidadeGestoraPortaria ptemp : this.unidadeGestoraPortarias) {
 			if (temp.length() > 0) {
 				temp = temp + ", " + ptemp.getUnidadeGestora().getSigla();
 			} else {

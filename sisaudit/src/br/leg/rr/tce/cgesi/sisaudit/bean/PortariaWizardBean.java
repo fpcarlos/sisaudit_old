@@ -99,6 +99,7 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 		portaria.setMostraCampo(true);
 		
 		portaria.setMostraCampo(true);
+		/*
 		Map<Integer, Portaria> mapPortaria = new HashMap<Integer, Portaria>();
 		String listaId = "";
 		List<UnidadeGestoraPortaria> listaUGP = new ArrayList<UnidadeGestoraPortaria>();
@@ -122,7 +123,8 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 			ltemp.setUnidadeGestora(sistemaBean.getUnidadeGestoraMap().get(ltemp.getUnidadeGestora()));
 			ltemp.setPortaria(mapPortaria.get(ltemp.getPortaria()));
 		}
-
+		
+*/
 		
 
 		return redirect("/sistema/portaria/listaPortarias.xhtml");
