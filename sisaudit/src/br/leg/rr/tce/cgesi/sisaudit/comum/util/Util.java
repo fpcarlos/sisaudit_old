@@ -96,9 +96,13 @@ public class Util {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		calendar.add(Calendar.DATE, dias);
-		if(diasEntreDatas(date, calendar.getTime())<dias)
-			addDiasUteis(date, dias+1);
-		
+		Integer vdia;
+		vdia=dias;
+		while(diasEntreDatas(date, calendar.getTime())<dias){
+			vdia=+1;
+			calendar.add(Calendar.DATE, vdia);
+			//addDiasUteis(date, dias);
+		}
 		return calendar.getTime();
 	}
 	public static String preencheCom(String linha_a_preencher, String letra,

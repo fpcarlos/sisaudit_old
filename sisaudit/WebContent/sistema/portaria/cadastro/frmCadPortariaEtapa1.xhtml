@@ -123,7 +123,7 @@
 												<table width="100%" cellpadding="0" cellspacing="0"
 													border="0">
 													<tr>
-														<td><p:outputLabel value="Iníco (Previsto)" /></td>
+														<td><p:outputLabel value="Início (Previsto)" /></td>
 														<td><p:outputLabel value="Fim (Previsto)" /></td>
 														<td><p:outputLabel value="Dias Úteis (Previsto)" /></td>
 													</tr>
@@ -167,7 +167,7 @@
 												<table width="100%" cellpadding="0" cellspacing="0"
 													border="0">
 													<tr>
-														<td><p:outputLabel value="Iníco (Previsto)" /></td>
+														<td><p:outputLabel value="Início (Previsto)" /></td>
 														<td><p:outputLabel value="Fim (Previsto)" /></td>
 														<td><p:outputLabel value="Dias Úteis (Previsto)" /></td>
 													</tr>
@@ -193,7 +193,11 @@
 																	update=":PortariaCreateForm:execDiasUteis" />
 															</p:calendar></td>
 														<td><h:inputText id="execDiasUteis"
-																value="#{portariaWizardBean.portaria.execDiasUteis}" /></td>
+																value="#{portariaWizardBean.portaria.execDiasUteis}">
+																<p:ajax event="change"
+																	listener="#{portariaWizardBean.dateChangeDias()}"
+																	update=":PortariaCreateForm:execFim" />
+																</h:inputText></td>
 													</tr>
 												</table>
 											</fieldset>
@@ -206,7 +210,7 @@
 												<table width="100%" cellpadding="0" cellspacing="0"
 													border="0">
 													<tr>
-														<td><p:outputLabel value="Iníco (Previsto)" /></td>
+														<td><p:outputLabel value="Início (Previsto)" /></td>
 														<td><p:outputLabel value="Fim (Previsto)" /></td>
 														<td><p:outputLabel value="Dias Úteis (Previsto)" /></td>
 													</tr>
@@ -232,7 +236,10 @@
 																	update=":PortariaCreateForm:relaDiasUteis" />
 															</p:calendar></td>
 														<td><h:inputText id="relaDiasUteis"
-																value="#{portariaWizardBean.portaria.relaDiasUteis}" /></td>
+																value="#{portariaWizardBean.portaria.relaDiasUteis}">
+																<p:ajax event="change"
+																	listener="#{portariaWizardBean.dateChangeDias()}"
+																	update=":PortariaCreateForm:relaFim" /></h:inputText></td>
 													</tr>
 												</table>
 											</fieldset>

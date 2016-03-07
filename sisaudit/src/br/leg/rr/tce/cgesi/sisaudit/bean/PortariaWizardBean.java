@@ -285,9 +285,11 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 	
 	
 	public void dateChangeDias(){
+		/*
 		portaria.setPlanFim(Util.addDiasUteis(portaria.getPlanInicio(), portaria.getPlanDiasUteis()));
 		portaria.setExecFim(Util.addDiasUteis(portaria.getExecInicio(), portaria.getExecDiasUteis()));
 		portaria.setRelaFim(Util.addDiasUteis(portaria.getRelaInicio(), portaria.getRelaDiasUteis()));
+		*/
 	}
 	// pega evento autocomplet remo��o de sele��o e atualiza listas
 		public void unselectUGA(final UnselectEvent event) {
