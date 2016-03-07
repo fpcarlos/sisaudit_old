@@ -150,7 +150,11 @@
 
 															</p:calendar></td>
 														<td><h:inputText id="planDiasUteis"
-																value="#{portariaWizardBean.portaria.planDiasUteis}" /></td>
+																value="#{portariaWizardBean.portaria.planDiasUteis}">
+																<p:ajax event="change"
+																	listener="#{portariaWizardBean.dateChangeDias()}"
+																	update=":PortariaCreateForm:planFim" />
+																</h:inputText></td>
 													</tr>
 												</table>
 											</fieldset>

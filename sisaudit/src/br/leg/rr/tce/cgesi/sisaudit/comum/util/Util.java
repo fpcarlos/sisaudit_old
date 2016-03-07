@@ -88,9 +88,19 @@ public class Util {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		calendar.add(Calendar.DATE, dias);
+		
 		return calendar.getTime();
 	}
 
+	public static Date addDiasUteis(Date date, int dias) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.DATE, dias);
+		if(diasEntreDatas(date, calendar.getTime())<dias)
+			addDiasUteis(date, dias+1);
+		
+		return calendar.getTime();
+	}
 	public static String preencheCom(String linha_a_preencher, String letra,
 			int tamanho, int direcao) {
 
