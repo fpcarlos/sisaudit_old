@@ -33,14 +33,20 @@ public class EquipeFiscalizacaoEjb extends AbstractEjb implements Serializable {
 
 	}
 
-	public void remove(EquipeFiscalizacao entity) {
-		entityManager.remove(entity);
+	public void remove(EquipeFiscalizacao entity) throws Exception {
+		try {
+			EquipeFiscalizacao aux = entityManager.find(EquipeFiscalizacao.class, entity.getId());
+			entityManager.remove(aux);
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
 	}
 
 	public List<EquipeFiscalizacao> findAll() throws Exception {
 		try {
 			String sql = "select * from scsisaudit.equipe_fiscalizacao";
-			List<EquipeFiscalizacao> listaEquipeFiscalizacao = executaSqlNativo(sql, EquipeFiscalizacao.class, entityManager);
+			List<EquipeFiscalizacao> listaEquipeFiscalizacao = executaSqlNativo(sql, EquipeFiscalizacao.class,
+					entityManager);
 			return listaEquipeFiscalizacao;
 
 		} catch (RuntimeException re) {
@@ -51,11 +57,12 @@ public class EquipeFiscalizacaoEjb extends AbstractEjb implements Serializable {
 			throw new Exception(" Erro" + e.getMessage());
 		}
 	}
-	
+
 	public List<EquipeFiscalizacao> findIdPortaria(Integer id) throws Exception {
 		try {
-			String sql = "select * from scsisaudit.equipe_fiscalizacao where id_portaria = "+ id +" ";
-			List<EquipeFiscalizacao> listaEquipeFiscalizacao = executaSqlNativo(sql, EquipeFiscalizacao.class, entityManager);
+			String sql = "select * from scsisaudit.equipe_fiscalizacao where id_portaria = " + id + " ";
+			List<EquipeFiscalizacao> listaEquipeFiscalizacao = executaSqlNativo(sql, EquipeFiscalizacao.class,
+					entityManager);
 			return listaEquipeFiscalizacao;
 
 		} catch (RuntimeException re) {
@@ -67,6 +74,5 @@ public class EquipeFiscalizacaoEjb extends AbstractEjb implements Serializable {
 		}
 
 	}
-
 
 }

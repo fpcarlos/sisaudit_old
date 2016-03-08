@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ejb.DependsOn;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
@@ -23,17 +24,21 @@ import br.leg.rr.tce.cgesi.sisaudit.ejb.AuditoriaEjb;
 import br.leg.rr.tce.cgesi.sisaudit.ejb.EquipeFiscalizacaoEjb;
 import br.leg.rr.tce.cgesi.sisaudit.ejb.PortariaEjb;
 import br.leg.rr.tce.cgesi.sisaudit.ejb.ServidorEjb;
+import br.leg.rr.tce.cgesi.sisaudit.ejb.TipoAuditorEjb;
 import br.leg.rr.tce.cgesi.sisaudit.ejb.UnidadeGestoraPortariaEjb;
 import br.leg.rr.tce.cgesi.sisaudit.entity.Auditoria;
 import br.leg.rr.tce.cgesi.sisaudit.entity.EquipeFiscalizacao;
 import br.leg.rr.tce.cgesi.sisaudit.entity.Portaria;
 import br.leg.rr.tce.cgesi.sisaudit.entity.Servidor;
+import br.leg.rr.tce.cgesi.sisaudit.entity.TipoAuditor;
 import br.leg.rr.tce.cgesi.sisaudit.entity.TipoFiscalizacao;
+import br.leg.rr.tce.cgesi.sisaudit.entity.UnidadeFiscalizadora;
 import br.leg.rr.tce.cgesi.sisaudit.entity.UnidadeGestoraAuditoria;
 import br.leg.rr.tce.cgesi.sisaudit.entity.UnidadeGestoraPortaria;
 
 @Named
 @SessionScoped
+@DependsOn("SistemaBean")
 public class PortariaWizardBean extends AbstractBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -46,6 +51,9 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 	
 	@Inject
 	private Auditoria auditoria;
+	
+	@Inject 
+	private EquipeFiscalizacao equipeFiscalizacao;
 
 	@EJB
 	private PortariaEjb portariaEjb;
@@ -78,6 +86,8 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 	private List<EquipeFiscalizacao> equipeFiscalizacaoList = new ArrayList<EquipeFiscalizacao>();
 	private List<Servidor> servidorAutoridadeList = new ArrayList<Servidor>();
 	private List<TipoFiscalizacao> tipoFiscalizacaoList = new ArrayList<TipoFiscalizacao>();
+	private List<UnidadeFiscalizadora> unidadeFiscalizadoraList = new ArrayList<UnidadeFiscalizadora>();
+	private List<TipoAuditor> tipoAuditorList = new ArrayList<TipoAuditor>();
 	
 	private String msgTexto;
 
@@ -143,6 +153,9 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 			tipoFiscalizacaoList = new ArrayList<TipoFiscalizacao>();
 			tipoFiscalizacaoList = sistemaBean.getTipoFiscalizacaoList();
 			
+			unidadeFiscalizadoraList = new ArrayList<UnidadeFiscalizadora>();
+			unidadeFiscalizadoraList = sistemaBean.getUnidadeFiscalizadoraList();
+			
 			if(portaria.getIdAuditoria()!=null){
 				auditoria = new Auditoria();
 				auditoria = auditoriaEjb.carregarAuditoria(aux.getIdAuditoria());
@@ -175,9 +188,12 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 
 			equipeFiscalizacaoList = new ArrayList<EquipeFiscalizacao>();
 			equipeFiscalizacaoList = equipeFiscalizacaoEjb.findIdPortaria(aux.getId());
+			servidorList = new ArrayList<Servidor>();
+			tipoAuditorList = sistemaBean.getTipoAuditorList();
 
 			for (Servidor stemp : servidorEjb.findAll()) {
 				String vtipo = stemp.getAutoridade();
+				servidorList.add(stemp);
 				if (vtipo.contains("S"))
 					servidorAutoridadeList.add(stemp);
 			}
@@ -252,6 +268,32 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 			showFacesMessage(e.getMessage(), 4);
 		}
 	}
+	
+	public void addEquipe() {
+		try {
+			EquipeFiscalizacao eqLista = new EquipeFiscalizacao();
+			eqLista.setPortaria(portaria);
+			eqLista.setServidor(equipeFiscalizacao.getServidor());
+			eqLista.setTipoAuditor(equipeFiscalizacao.getTipoAuditor());
+			equipeFiscalizacaoList.add(eqLista);
+			equipeFiscalizacaoEjb.salvar(eqLista);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			showFacesMessage(e.getMessage(), 4);
+		}
+	}
+	
+	public void remEquipe(EquipeFiscalizacao eq){
+		try {
+			equipeFiscalizacaoList.remove(eq);
+			equipeFiscalizacaoEjb.remove(eq);						
+		} catch (Exception e) {
+			e.printStackTrace();
+			showFacesMessage(e.getMessage(), 4);
+		}
+	}
+
 
 	
 	public String onFlowProcess(FlowEvent event) {
@@ -259,12 +301,15 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 			skip = false; // reset in case user goes back
 			return "confirm";
 		} else {
-			
-			if (event.getNewStep().equals("equipe")) {
-				this.selecionandoUGP();
-				//this.salvarMinutaPortaria();
-			} else {
+			if(event.getNewStep().equals("periodo")){
 				this.salvarMinutaPortaria();
+			}
+			if(event.getNewStep().equals("jurisdicionadoGrupo")){
+				this.salvarMinutaPortaria();
+			}
+			
+			if (event.getNewStep().equals("equipe") && !event.getOldStep().equals("resumo")) {
+				this.selecionandoUGP();
 			}
 			
 			return event.getNewStep();
@@ -285,11 +330,11 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 	
 	
 	public void dateChangeDias(){
-		/*
+		
 		portaria.setPlanFim(Util.addDiasUteis(portaria.getPlanInicio(), portaria.getPlanDiasUteis()));
 		portaria.setExecFim(Util.addDiasUteis(portaria.getExecInicio(), portaria.getExecDiasUteis()));
 		portaria.setRelaFim(Util.addDiasUteis(portaria.getRelaInicio(), portaria.getRelaDiasUteis()));
-		*/
+		
 	}
 	// pega evento autocomplet remo��o de sele��o e atualiza listas
 		public void unselectUGA(final UnselectEvent event) {
@@ -441,6 +486,30 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 
 	public void setTipoFiscalizacaoList(List<TipoFiscalizacao> tipoFiscalizacaoList) {
 		this.tipoFiscalizacaoList = tipoFiscalizacaoList;
+	}
+
+	public List<UnidadeFiscalizadora> getUnidadeFiscalizadoraList() {
+		return unidadeFiscalizadoraList;
+	}
+
+	public void setUnidadeFiscalizadoraList(List<UnidadeFiscalizadora> unidadeFiscalizadoraList) {
+		this.unidadeFiscalizadoraList = unidadeFiscalizadoraList;
+	}
+
+	public EquipeFiscalizacao getEquipeFiscalizacao() {
+		return equipeFiscalizacao;
+	}
+
+	public void setEquipeFiscalizacao(EquipeFiscalizacao equipeFiscalizacao) {
+		this.equipeFiscalizacao = equipeFiscalizacao;
+	}
+
+	public List<TipoAuditor> getTipoAuditorList() {
+		return tipoAuditorList;
+	}
+
+	public void setTipoAuditorList(List<TipoAuditor> tipoAuditorList) {
+		this.tipoAuditorList = tipoAuditorList;
 	}
 
 
