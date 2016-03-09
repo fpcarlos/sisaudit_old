@@ -1,11 +1,16 @@
 package br.leg.rr.tce.cgesi.sisaudit.bean;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -40,7 +45,8 @@ public class AuditoriaBean extends AbstractBean implements Serializable {
 	public AuditoriaBean() {
 		super();
 	}
-    	
+	
+	   	
 	public List<Auditoria> getItems() {
 		return items;
 	}
@@ -65,6 +71,12 @@ public class AuditoriaBean extends AbstractBean implements Serializable {
 	
 	public String abrirCadastroAuditoria(){
 		auditoria = new Auditoria();
+		Date d = new Date();
+		SimpleDateFormat fd = new SimpleDateFormat("yyyy");
+		String year = fd.format(d);
+		//int year = cal.get(Calendar.YEAR);
+		
+		auditoria.setAnoAuditoria(year);
 		unidadeGestoraLista = new ArrayList<UnidadeGestora>();
 		unidadeGestoraLista.addAll(sistemaBean.getUnidadeGestoraList());
 		return redirect("/sistema/auditoria/cadastroAuditorias.xhtml");
@@ -138,18 +150,27 @@ public class AuditoriaBean extends AbstractBean implements Serializable {
     }
 
 	
-	public void salvar(){
+	public void salvar() throws Exception{
 		try {
+			FacesContext fc = FacesContext.getCurrentInstance();
+			ExternalContext ec = fc.getExternalContext();
 			
 			auditoriaEjb.salvarBloco(auditoria);
-			
 			showFacesMessage("salvo com sucesso!!!", 2);
+			items = new ArrayList<Auditoria>();		
+	        items = auditoriaEjb.findAll();
+			ec.redirect("listaAuditorias.xhtml");
+	        //return redirect("sisaudit/sistema/auditoria/listaAuditorias.xhtml?faces-redirect=true");
+	        //return redirect("/sistema/auditoria/listaAuditorias.xhtml"); 
+	        
+			
 			
 		} catch (Exception e) {
 			
 			e.printStackTrace();
-			
 			showFacesMessage(e.getMessage(), 4);
+			//return null;
+			
 		}
 	}
 	

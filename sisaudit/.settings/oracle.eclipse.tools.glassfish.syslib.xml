@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <system-libraries>
     <library path="G:/ProjetoWEB/glassfish4/glassfish/modules/javax.faces.jar" source="C:/Users/fpcarlos/.m2/repository/org/glassfish/javax.faces/2.2.12/javax.faces-2.2.12-sources.jar"/>
+    <library path="G:/ProjetoWEB/glassfish4/glassfish/modules/javax.el.jar" source="C:/Users/fpcarlos/.m2/repository/org/glassfish/javax.el/3.0.1-b03/javax.el-3.0.1-b03-sources.jar"/>
 </system-libraries>

@@ -76,8 +76,9 @@ public class AuditoriaEjb extends AbstractEjb implements Serializable {
 
 	public List<Auditoria> findAll() throws Exception {
 		try {
+			List<Auditoria> listaAuditoria = new ArrayList<>();
 			String sql = "select * from scsisaudit.auditoria";
-			List<Auditoria> listaAuditoria = executaSqlNativo(sql, Auditoria.class, entityManager);
+			listaAuditoria = executaSqlNativo(sql, Auditoria.class, entityManager);
 			return listaAuditoria;
 
 		} catch (RuntimeException re) {

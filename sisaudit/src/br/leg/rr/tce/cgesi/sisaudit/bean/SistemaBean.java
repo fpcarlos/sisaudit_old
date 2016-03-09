@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.inject.Named;
 
 import br.leg.rr.tce.cgesi.sisaudit.comum.entity.UnidadeGestora;
 import br.leg.rr.tce.cgesi.sisaudit.ejb.SistemaEjb;
@@ -24,6 +25,7 @@ import br.leg.rr.tce.cgesi.sisaudit.entity.UnidadeGestoraAuditoria;
 
 @Startup
 @Singleton
+@Named("sistemaBean")
 public class SistemaBean extends AbstractBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 	

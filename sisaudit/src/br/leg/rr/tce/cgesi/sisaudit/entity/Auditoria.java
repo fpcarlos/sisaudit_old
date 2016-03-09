@@ -117,6 +117,9 @@ public class Auditoria implements Serializable {
 	@Temporal(TemporalType.DATE)
 	@Column(name="rela_inicio_real")
 	private Date relaInicioReal;
+	
+	@Column(name="ano_auditoria")
+	private String anoAuditoria;
 
 	private String relator;
 
@@ -556,6 +559,14 @@ public class Auditoria implements Serializable {
 
 	public void setUnidadeGestoraAuditoriasExcluidas(List<UnidadeGestoraAuditoria> unidadeGestoraAuditoriasExcluidas) {
 		this.unidadeGestoraAuditoriasExcluidas = unidadeGestoraAuditoriasExcluidas;
+	}
+
+	public String getAnoAuditoria() {
+		return anoAuditoria;
+	}
+
+	public void setAnoAuditoria(String anoAuditoria) {
+		this.anoAuditoria = anoAuditoria;
 	}
 
 
