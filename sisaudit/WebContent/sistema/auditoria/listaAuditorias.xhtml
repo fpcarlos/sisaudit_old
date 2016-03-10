@@ -18,15 +18,20 @@
 		<h:form id="form">
 			<p:dataTable id="listaAuditorias"
 				value="#{auditoriaBean.items}" var="s"
-				emptyMessage="Nenhuma Auditoria Enqontrada" rows="100"
+				emptyMessage="Nenhuma Auditoria Enqontrada" rows="12"
 				paginator="true" paginatorPosition="bottom"
 				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				currentPageReportTemplate="({currentPage} de {totalPages})"
-				sortBy="#{s.idauditoria}">
+				style="margin-bottom:40px"
+				sortMode="multiple">
 
-				<p:column headerText="Código / Ano" width="10%">
+				<p:column headerText="Código" width="10%" sortBy="#{s.idauditoria}">
 					<h:outputText style="font-weight: bold"
-						value="#{s.idauditoria} / #{s.anoAuditoria}" />
+						value="#{s.idauditoria}" />
+				</p:column>
+				<p:column headerText="Ano" width="10%" sortBy="#{s.anoAuditoria}" filterBy="#{s.anoAuditoria}">
+					<h:outputText style="font-weight: bold"
+						value="#{s.anoAuditoria}" />
 				</p:column>
 
 				<p:column headerText="Objetivo" width="30%">

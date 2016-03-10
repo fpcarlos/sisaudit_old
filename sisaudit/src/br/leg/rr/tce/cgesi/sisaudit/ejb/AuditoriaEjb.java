@@ -40,7 +40,7 @@ public class AuditoriaEjb extends AbstractEjb implements Serializable {
 
 	}
 
-	public void salvarBloco(Auditoria entity) {
+	public void salvarBloco(Auditoria entity) throws Exception {
 		try {
 			this.salvar(entity);
 			//entity.criarListaUGAuditoria();
@@ -51,7 +51,7 @@ public class AuditoriaEjb extends AbstractEjb implements Serializable {
 				unidadeGestoraAuditoriaEjb.remove(aux);
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			throw new Exception(e.getMessage());
 		}
 	}
 	
@@ -65,13 +65,18 @@ public class AuditoriaEjb extends AbstractEjb implements Serializable {
 			aud.setUnidadeGestoraAuditoriasExcluidas(new ArrayList<UnidadeGestoraAuditoria>());
 			return aud;			
 		} catch (Exception e) {
-			// TODO: handle exception
-			throw e;
+			throw new Exception(e.getMessage());
 		}
 	}
 
-	public void remove(Auditoria entity) {
-		entityManager.remove(entity);
+	public void remove(Auditoria entity) throws Exception {
+		try {
+			Auditoria aux = entityManager.find(Auditoria.class, entity.getId());
+			entityManager.remove(aux);
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
+		
 	}
 
 	public List<Auditoria> findAll() throws Exception {

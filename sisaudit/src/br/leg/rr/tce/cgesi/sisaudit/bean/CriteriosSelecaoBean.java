@@ -28,7 +28,7 @@ public class CriteriosSelecaoBean extends AbstractBean implements Serializable {
 	
 	public void save(){
 		criteriosSelecao.setNome("Teste ejb");
-		criteriosSelecaoEjb.salvar(criteriosSelecao);		
+		//criteriosSelecaoEjb.salvar(criteriosSelecao);		
 	}
 	
 	public String abrirListaAuditoria(){

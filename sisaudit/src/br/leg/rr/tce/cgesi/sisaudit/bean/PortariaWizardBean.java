@@ -45,14 +45,14 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 
 	@Inject
 	private transient SistemaBean sistemaBean;
-	
+
 	@Inject
 	private Portaria portaria;
-	
+
 	@Inject
 	private Auditoria auditoria;
-	
-	@Inject 
+
+	@Inject
 	private EquipeFiscalizacao equipeFiscalizacao;
 
 	@EJB
@@ -60,19 +60,17 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 
 	@EJB
 	private AuditoriaEjb auditoriaEjb;
-	
+
 	@EJB
 	private UnidadeGestoraPortariaEjb unidadeGestoraPortariaEjb;
-	
+
 	@EJB
 	private EquipeFiscalizacaoEjb equipeFiscalizacaoEjb;
 
 	@EJB
 	private ServidorEjb servidorEjb;
 
-
-
-	//Listas
+	// Listas
 	private List<UnidadeGestora> unidadeGestoraLista = new ArrayList<UnidadeGestora>();
 	private List<UnidadeGestoraPortaria> unidadeGestoraPortariaList = new ArrayList<UnidadeGestoraPortaria>();
 	private List<UnidadeGestoraPortaria> unidadeGestoraPortariaList2 = new ArrayList<UnidadeGestoraPortaria>();
@@ -88,58 +86,52 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 	private List<TipoFiscalizacao> tipoFiscalizacaoList = new ArrayList<TipoFiscalizacao>();
 	private List<UnidadeFiscalizadora> unidadeFiscalizadoraList = new ArrayList<UnidadeFiscalizadora>();
 	private List<TipoAuditor> tipoAuditorList = new ArrayList<TipoAuditor>();
-	
+
 	private String msgTexto;
 
 	private boolean skip;
 
 	private boolean exibir;
 
-
-	
 	public PortariaWizardBean() {
 		super();
 	}
-	
+
 	public String abrirListaPortaria() throws Exception {
 		portaria = new Portaria();
 		portariaList = new ArrayList<>();
 		portariaList = portariaEjb.listaPortaria();
-		
+
 		portaria.setMostraCampo(true);
-		
+
 		portaria.setMostraCampo(true);
 		/*
-		Map<Integer, Portaria> mapPortaria = new HashMap<Integer, Portaria>();
-		String listaId = "";
-		List<UnidadeGestoraPortaria> listaUGP = new ArrayList<UnidadeGestoraPortaria>();
-		listaUGP=unidadeGestoraPortariaEjb.findIAll();
-
-		for (Portaria ptemp : portariaList) {
-			mapPortaria.put(ptemp.getId(), ptemp);
-
-			if (listaId.length() > 0) {
-				listaId = listaId + "," + ptemp.getId();
-			} else {
-				listaId = ptemp.getId().toString();
-			}
-
-		}
-		listaUGP = unidadeGestoraPortariaEjb.listaUGDasPortaria(listaId);
-
-		for (UnidadeGestoraPortaria ltemp : listaUGP) {
-			mapPortaria.get(ltemp.getPortaria().getId()).getListaUnidadeGestoraDaPortaria().add(ltemp);
-
-			ltemp.setUnidadeGestora(sistemaBean.getUnidadeGestoraMap().get(ltemp.getUnidadeGestora()));
-			ltemp.setPortaria(mapPortaria.get(ltemp.getPortaria()));
-		}
-		
-*/
-		
+		 * Map<Integer, Portaria> mapPortaria = new HashMap<Integer,
+		 * Portaria>(); String listaId = ""; List<UnidadeGestoraPortaria>
+		 * listaUGP = new ArrayList<UnidadeGestoraPortaria>();
+		 * listaUGP=unidadeGestoraPortariaEjb.findIAll();
+		 * 
+		 * for (Portaria ptemp : portariaList) { mapPortaria.put(ptemp.getId(),
+		 * ptemp);
+		 * 
+		 * if (listaId.length() > 0) { listaId = listaId + "," + ptemp.getId();
+		 * } else { listaId = ptemp.getId().toString(); }
+		 * 
+		 * } listaUGP = unidadeGestoraPortariaEjb.listaUGDasPortaria(listaId);
+		 * 
+		 * for (UnidadeGestoraPortaria ltemp : listaUGP) {
+		 * mapPortaria.get(ltemp.getPortaria().getId()).
+		 * getListaUnidadeGestoraDaPortaria().add(ltemp);
+		 * 
+		 * ltemp.setUnidadeGestora(sistemaBean.getUnidadeGestoraMap().get(ltemp.
+		 * getUnidadeGestora()));
+		 * ltemp.setPortaria(mapPortaria.get(ltemp.getPortaria())); }
+		 * 
+		 */
 
 		return redirect("/sistema/portaria/listaPortarias.xhtml");
 	}
-	
+
 	public String editarWizardPortaria(Portaria aux) {
 		try {
 			portaria = new Portaria();
@@ -149,29 +141,29 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 			unidadeGestoraDaAuditoria = new ArrayList<UnidadeGestora>();
 			unidadeGestoraSelecionadas = new ArrayList<UnidadeGestora>();
 			unidadeGestoraDaPortaria = new ArrayList<UnidadeGestora>();
-			
+
 			tipoFiscalizacaoList = new ArrayList<TipoFiscalizacao>();
 			tipoFiscalizacaoList = sistemaBean.getTipoFiscalizacaoList();
-			
+
 			unidadeFiscalizadoraList = new ArrayList<UnidadeFiscalizadora>();
 			unidadeFiscalizadoraList = sistemaBean.getUnidadeFiscalizadoraList();
-			
-			if(portaria.getIdAuditoria()!=null){
+
+			if (portaria.getIdAuditoria() != null) {
 				auditoria = new Auditoria();
 				auditoria = auditoriaEjb.carregarAuditoria(aux.getIdAuditoria());
-				
-				portaria.setAuditoria(auditoria);	
-				for(UnidadeGestoraAuditoria x: portaria.getAuditoria().getUnidadeGestoraAuditorias()){
+
+				portaria.setAuditoria(auditoria);
+				for (UnidadeGestoraAuditoria x : portaria.getAuditoria().getUnidadeGestoraAuditorias()) {
 					UnidadeGestora unG = new UnidadeGestora();
 					UnidadeGestoraPortaria unGP = new UnidadeGestoraPortaria();
-					unG=x.getUnidadeGestora();
+					unG = x.getUnidadeGestora();
 					unidadeGestoraDaAuditoria.add(unG);
 					unGP.setPortaria(portaria);
 					unGP.setUnidadeGestora(unG);
 					portaria.getListaUnidadeGestoraDaPortaria().add(unGP);
 				}
-			}else{
-				for(UnidadeGestora x: sistemaBean.getUnidadeGestoraList()){
+			} else {
+				for (UnidadeGestora x : sistemaBean.getUnidadeGestoraList()) {
 					UnidadeGestoraPortaria unGP = new UnidadeGestoraPortaria();
 					unidadeGestoraDaAuditoria.add(x);
 					unGP.setPortaria(portaria);
@@ -183,8 +175,7 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 				UnidadeGestora unG = new UnidadeGestora();
 				unG = sistemaBean.selecionarUnidadeGestora(x.getUnidadeGestora().getId());
 				unidadeGestoraSelecionadas.add(unG);
-			}			
-			
+			}
 
 			equipeFiscalizacaoList = new ArrayList<EquipeFiscalizacao>();
 			equipeFiscalizacaoList = equipeFiscalizacaoEjb.findIdPortaria(aux.getId());
@@ -206,59 +197,69 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 			return null;
 		}
 	}
-	
-	// prepara editar portaria de auditoria
-		public void selecionandoUGP() {
-			try {
-				unidadeGestoraPortariaList = new ArrayList<UnidadeGestoraPortaria>();
-				unidadeGestoraPortariaList2 = new ArrayList<UnidadeGestoraPortaria>();
 
-				Map<Integer, UnidadeGestora> mapUGS = new HashMap<Integer, UnidadeGestora>();
-				Map<Integer, UnidadeGestora> mapUGE = new HashMap<Integer, UnidadeGestora>();
-				Map<Integer, UnidadeGestora> mapUGP = new HashMap<Integer, UnidadeGestora>();
-				// unidades selecionadas
-				for (UnidadeGestora x : unidadeGestoraSelecionadas) {
-					mapUGS.put(x.getId(), x);
+	// prepara editar portaria de auditoria
+	public void selecionandoUGP() {
+		try {
+			unidadeGestoraPortariaList = new ArrayList<UnidadeGestoraPortaria>();
+			unidadeGestoraPortariaList2 = new ArrayList<UnidadeGestoraPortaria>();
+
+			Map<Integer, UnidadeGestora> mapUGS = new HashMap<Integer, UnidadeGestora>();
+			Map<Integer, UnidadeGestora> mapUGE = new HashMap<Integer, UnidadeGestora>();
+			Map<Integer, UnidadeGestora> mapUGP = new HashMap<Integer, UnidadeGestora>();
+			// unidades selecionadas
+			for (UnidadeGestora x : unidadeGestoraSelecionadas) {
+				mapUGS.put(x.getId(), x);
+				UnidadeGestoraPortaria ugp = new UnidadeGestoraPortaria();
+				ugp.setPortaria(portaria);
+				ugp.setUnidadeGestora(x);
+				unidadeGestoraPortariaList.add(ugp);
+			}
+			// da auditoria
+			if (portaria.getIdAuditoria() != null) {
+				for (UnidadeGestoraAuditoria x : portaria.getAuditoria().getUnidadeGestoraAuditorias()) {
+					mapUGE.put(x.getUnidadeGestora().getId(), x.getUnidadeGestora());
 					UnidadeGestoraPortaria ugp = new UnidadeGestoraPortaria();
-					ugp.setPortaria(portaria);
-					ugp.setUnidadeGestora(x);
-					unidadeGestoraPortariaList.add(ugp);
-				}
-				// da auditoria
-				if (portaria.getIdAuditoria() != null) {
-					for (UnidadeGestoraAuditoria x : portaria.getAuditoria().getUnidadeGestoraAuditorias()) {
-						mapUGE.put(x.getUnidadeGestora().getId(), x.getUnidadeGestora());
-						UnidadeGestoraPortaria ugp = new UnidadeGestoraPortaria();
-						ugp.setPortaria(portaria);
-						ugp.setUnidadeGestora(x.getUnidadeGestora());
-						// portaria.getUnidadeGestoraPortariaExcluidas().add(ugp);
-					}
-				}
-				// daportaria
-				for (UnidadeGestoraPortaria x : portaria.getUnidadeGestoraPortarias()) {
-					mapUGP.put(x.getUnidadeGestora().getId(), x.getUnidadeGestora());
-					UnidadeGestoraPortaria ugp = new UnidadeGestoraPortaria();
-					ugp.setId(x.getId());
 					ugp.setPortaria(portaria);
 					ugp.setUnidadeGestora(x.getUnidadeGestora());
-					unidadeGestoraPortariaList2.add(ugp);
-					if (mapUGS.containsKey(x.getUnidadeGestora().getId())) {
-						portaria.removeUnidadeGestoraPortaria(ugp);
-					}
+					// portaria.getUnidadeGestoraPortariaExcluidas().add(ugp);
 				}
-				portaria.setUnidadeGestoraPortarias(getUnidadeGestoraPortariaList());
-				portaria.setUnidadeGestoraPortariaExcluidas(unidadeGestoraPortariaList2);
-				portaria.setEquipeFiscalizacaoList(getEquipeFiscalizacaoList());
-				this.salvarMinutaPortaria();
-				// this.salvar();
-
-			} catch (Exception e) {
-				e.printStackTrace();
-				showFacesMessage(e.getMessage(), 4);
 			}
+			// daportaria
+			for (UnidadeGestoraPortaria x : portaria.getUnidadeGestoraPortarias()) {
+				mapUGP.put(x.getUnidadeGestora().getId(), x.getUnidadeGestora());
+				UnidadeGestoraPortaria ugp = new UnidadeGestoraPortaria();
+				ugp.setId(x.getId());
+				ugp.setPortaria(portaria);
+				ugp.setUnidadeGestora(x.getUnidadeGestora());
+				unidadeGestoraPortariaList2.add(ugp);
+				if (mapUGS.containsKey(x.getUnidadeGestora().getId())) {
+					portaria.removeUnidadeGestoraPortaria(ugp);
+				}
+			}
+			portaria.setUnidadeGestoraPortarias(getUnidadeGestoraPortariaList());
+			portaria.setUnidadeGestoraPortariaExcluidas(unidadeGestoraPortariaList2);
+			portaria.setEquipeFiscalizacaoList(getEquipeFiscalizacaoList());
+			this.salvarMinutaPortaria();
+			// this.salvar();
 
+		} catch (Exception e) {
+			e.printStackTrace();
+			showFacesMessage(e.getMessage(), 4);
 		}
 
+	}
+
+	public String abrirCadastroPortaria() {
+		try {
+			return redirect("/sistema/portaria/cadastro/frmCadPortariaEtapa1.xhtml");	
+		} catch (Exception e) {
+			e.printStackTrace();
+			showFacesMessage(e.getMessage(), 4);
+			return null;
+		}
+		
+	}
 
 	public void salvarMinutaPortaria() {
 		try {
@@ -268,7 +269,7 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 			showFacesMessage(e.getMessage(), 4);
 		}
 	}
-	
+
 	public void addEquipe() {
 		try {
 			EquipeFiscalizacao eqLista = new EquipeFiscalizacao();
@@ -277,41 +278,39 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 			eqLista.setTipoAuditor(equipeFiscalizacao.getTipoAuditor());
 			equipeFiscalizacaoList.add(eqLista);
 			equipeFiscalizacaoEjb.salvar(eqLista);
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			showFacesMessage(e.getMessage(), 4);
 		}
 	}
-	
-	public void remEquipe(EquipeFiscalizacao eq){
+
+	public void remEquipe(EquipeFiscalizacao eq) {
 		try {
 			equipeFiscalizacaoList.remove(eq);
-			equipeFiscalizacaoEjb.remove(eq);						
+			equipeFiscalizacaoEjb.remove(eq);
 		} catch (Exception e) {
 			e.printStackTrace();
 			showFacesMessage(e.getMessage(), 4);
 		}
 	}
 
-
-	
 	public String onFlowProcess(FlowEvent event) {
 		if (skip) {
 			skip = false; // reset in case user goes back
 			return "confirm";
 		} else {
-			if(event.getNewStep().equals("periodo")){
+			if (event.getNewStep().equals("periodo")) {
 				this.salvarMinutaPortaria();
 			}
-			if(event.getNewStep().equals("jurisdicionadoGrupo")){
+			if (event.getNewStep().equals("jurisdicionadoGrupo")) {
 				this.salvarMinutaPortaria();
 			}
-			
+
 			if (event.getNewStep().equals("equipe") && !event.getOldStep().equals("resumo")) {
 				this.selecionandoUGP();
 			}
-			
+
 			return event.getNewStep();
 		}
 	}
@@ -327,38 +326,37 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 			portaria.setRelaDiasUteis(Util.diasEntreDatas(portaria.getRelaInicio(), portaria.getRelaFim()));
 		}
 	}
-	
-	
-	public void dateChangeDias(){
-		
+
+	public void dateChangeDias() {
+
 		portaria.setPlanFim(Util.addDiasUteis(portaria.getPlanInicio(), portaria.getPlanDiasUteis()));
 		portaria.setExecFim(Util.addDiasUteis(portaria.getExecInicio(), portaria.getExecDiasUteis()));
 		portaria.setRelaFim(Util.addDiasUteis(portaria.getRelaInicio(), portaria.getRelaDiasUteis()));
-		
+
 	}
+
 	// pega evento autocomplet remo��o de sele��o e atualiza listas
-		public void unselectUGA(final UnselectEvent event) {
-			try {
-				final UnidadeGestora tmp = (UnidadeGestora) event.getObject();
-				portaria.adincionarNaListaExcluidos(tmp);
-				unidadeGestoraLista.add(tmp);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
+	public void unselectUGA(final UnselectEvent event) {
+		try {
+			final UnidadeGestora tmp = (UnidadeGestora) event.getObject();
+			portaria.adincionarNaListaExcluidos(tmp);
+			unidadeGestoraLista.add(tmp);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+
+	// pega evento autocomplet sele��o de objetos e atualiza listas
+	public void selectUGA(final SelectEvent event) {
+		try {
+			final UnidadeGestora tmp = (UnidadeGestora) event.getObject();
+			unidadeGestoraLista.remove(tmp);
+			portaria.selecionarUGA(tmp);
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
 
-		// pega evento autocomplet sele��o de objetos e atualiza listas
-		public void selectUGA(final SelectEvent event) {
-			try {
-				final UnidadeGestora tmp = (UnidadeGestora) event.getObject();
-				unidadeGestoraLista.remove(tmp);
-				portaria.selecionarUGA(tmp);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-
-		}
-
+	}
 
 	public Portaria getPortaria() {
 		return portaria;
@@ -511,11 +509,5 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 	public void setTipoAuditorList(List<TipoAuditor> tipoAuditorList) {
 		this.tipoAuditorList = tipoAuditorList;
 	}
-
-
-
-	
-	
-	
 
 }

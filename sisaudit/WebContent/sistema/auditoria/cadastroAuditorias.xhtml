@@ -34,14 +34,14 @@
 						</tr>
 						<tr>
 							<td><p:outputLabel value="Título: " /></td>
-							<td><p:inputText id="titulo"
-									value="#{auditoriaBean.auditoria.titulo}" size="80"
+							<td><p:inputTextarea id="titulo"
+									value="#{auditoriaBean.auditoria.titulo}" cols="100" rows="3"
 									required="true" /></td>
 						</tr>
 						<tr>
 							<td><p:outputLabel value="Objetivo: " /></td>
-							<td><p:inputText id="objetivo"
-									value="#{auditoriaBean.auditoria.objetivo}" size="80"
+							<td><p:inputTextarea id="objetivo"
+									value="#{auditoriaBean.auditoria.objetivo}" cols="100" rows="3"
 									required="true" /></td>
 						</tr>
 						<tr>
@@ -89,9 +89,12 @@
 										var="varUF" itemLabel="#{varUF.sigla}" itemValue="#{varUF}" />
 								</p:selectOneMenu></td>
 						</tr>
+						<!-- 
 						<tr>
 							<td><p:outputLabel value="Critério de Seleção" /></td>
-							<td><p:selectOneMenu id="idCriteriosSelecao"
+							<td>
+							
+							<p:selectOneMenu id="idCriteriosSelecao"
 									value="#{auditoriaBean.auditoria.criteriosSelecao}"
 									converter="converterPadrao">
 									<f:selectItem itemLabel="Seleione um critério para a auditora"
@@ -100,6 +103,7 @@
 										var="varCS" itemLabel="#{varCS.nome}" itemValue="#{varCS}" />
 								</p:selectOneMenu></td>
 						</tr>
+						 -->
 						<tr>
 							<td><p:outputLabel value="Origem da Auditoria" /></td>
 							<td><p:selectOneMenu id="idOrigemProjeto"

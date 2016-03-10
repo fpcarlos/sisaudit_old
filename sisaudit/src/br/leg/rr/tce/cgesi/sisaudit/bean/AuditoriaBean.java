@@ -20,6 +20,7 @@ import org.primefaces.event.UnselectEvent;
 import br.leg.rr.tce.cgesi.sisaudit.comum.entity.UnidadeGestora;
 import br.leg.rr.tce.cgesi.sisaudit.comum.util.Util;
 import br.leg.rr.tce.cgesi.sisaudit.ejb.AuditoriaEjb;
+import br.leg.rr.tce.cgesi.sisaudit.ejb.CriteriosSelecaoEjb;
 import br.leg.rr.tce.cgesi.sisaudit.entity.Auditoria;
 import br.leg.rr.tce.cgesi.sisaudit.entity.UnidadeGestoraAuditoria;
 
@@ -37,6 +38,9 @@ public class AuditoriaBean extends AbstractBean implements Serializable {
 	
 	@EJB
 	private AuditoriaEjb auditoriaEjb;
+	
+	@EJB
+	private CriteriosSelecaoEjb criteriosSelecaoEjb;
 		
 	private List<Auditoria> items = new ArrayList<Auditoria>();
 	
@@ -69,17 +73,25 @@ public class AuditoriaBean extends AbstractBean implements Serializable {
 	}
 	
 	
-	public String abrirCadastroAuditoria(){
-		auditoria = new Auditoria();
-		Date d = new Date();
-		SimpleDateFormat fd = new SimpleDateFormat("yyyy");
-		String year = fd.format(d);
-		//int year = cal.get(Calendar.YEAR);
-		
-		auditoria.setAnoAuditoria(year);
-		unidadeGestoraLista = new ArrayList<UnidadeGestora>();
-		unidadeGestoraLista.addAll(sistemaBean.getUnidadeGestoraList());
-		return redirect("/sistema/auditoria/cadastroAuditorias.xhtml");
+	public String abrirCadastroAuditoria() throws Exception{
+		try {
+			auditoria = new Auditoria();
+			Date d = new Date();
+			SimpleDateFormat fd = new SimpleDateFormat("yyyy");
+			String year = fd.format(d);
+			//int year = cal.get(Calendar.YEAR);
+			
+			auditoria.setAnoAuditoria(year);
+			auditoria.setCriteriosSelecao(criteriosSelecaoEjb.carregarCriteriosSelecao(7)); 
+			unidadeGestoraLista = new ArrayList<UnidadeGestora>();
+			unidadeGestoraLista.addAll(sistemaBean.getUnidadeGestoraList());
+			return redirect("/sistema/auditoria/cadastroAuditorias.xhtml");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			showFacesMessage(e.getMessage(), 4);
+			return null;
+		}
 	}
 
 	public Auditoria getAuditoria() {
@@ -101,7 +113,8 @@ public class AuditoriaBean extends AbstractBean implements Serializable {
 		    auditoria.adincionarNaListaExcluidos(tmp);	
 		    unidadeGestoraLista.add(tmp);			
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
+			showFacesMessage(e.getMessage(), 4);
 		}
 	}
 	
@@ -112,7 +125,8 @@ public class AuditoriaBean extends AbstractBean implements Serializable {
 	  			unidadeGestoraLista.remove(tmp);
 	  			auditoria.selecionarUGA(tmp);			
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
+			showFacesMessage(e.getMessage(), 4);
 		}
   			
 	}
@@ -140,7 +154,6 @@ public class AuditoriaBean extends AbstractBean implements Serializable {
 	        return redirect("/sistema/auditoria/cadastroAuditorias.xhtml");	
 	        
 		} catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 			showFacesMessage(e.getMessage(), 4);
 			return null;
