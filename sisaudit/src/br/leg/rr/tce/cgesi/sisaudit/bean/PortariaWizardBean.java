@@ -150,6 +150,14 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 
 			unidadeFiscalizadoraList = new ArrayList<UnidadeFiscalizadora>();
 			unidadeFiscalizadoraList = sistemaBean.getUnidadeFiscalizadoraList();
+			
+			if(auditoria.getId()!=null){
+				Integer vaudi = auditoria.getId();
+				Auditoria auditoria = new Auditoria();
+				auditoria=auditoriaEjb.carregarAuditoria(vaudi);
+				portaria.setIdAuditoria(auditoria.getId());
+			}
+			
 
 			if (portaria.getIdAuditoria() != null) {
 				auditoria = new Auditoria();
