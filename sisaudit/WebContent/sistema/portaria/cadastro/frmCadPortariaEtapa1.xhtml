@@ -259,11 +259,12 @@
 											<p:selectCheckboxMenu id="jurisdicionado"
 												value="#{portariaWizardBean.unidadeGestoraSelecionadas}"
 												label="Jusrisdicionados para a portaria"
-												converter="converterAutoCompletUG">
+												converter="converterAutoCompletUG"
+												filter="true">
 
 												<f:selectItems
 													value="#{portariaWizardBean.unidadeGestoraDaAuditoria}"
-													var="varUG" itemLabel="#{varUG.sigla}" itemValue="#{varUG}" />
+													var="varUG" itemLabel="#{varUG.nome}" itemValue="#{varUG}" />
 
 												<p:ajax event="change"
 													update=":PortariaCreateForm:display11 :PortariaCreateForm:jurisdicionado"

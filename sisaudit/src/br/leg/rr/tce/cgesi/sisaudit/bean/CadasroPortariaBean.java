@@ -47,7 +47,8 @@ public class CadasroPortariaBean extends AbstractBean implements Serializable {
 		try {
 			auditoria = new Auditoria();
 			auditoria = auditoriaEjb.carregarAuditoria(aux.getId());
-			
+			//auditoria.setsetPortariaList(portariaEjb.findIdAuditoria(aux.getId()));
+
 			
 			return redirect("/sistema/portaria/cadastroPortariaAuditoria.xhtml"); 
 		} catch (Exception e) {

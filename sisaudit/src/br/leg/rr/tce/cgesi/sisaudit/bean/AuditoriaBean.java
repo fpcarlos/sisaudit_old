@@ -160,6 +160,8 @@ public class AuditoriaBean extends AbstractBean implements Serializable {
 		
 		
     }
+	
+	
 
 	
 	public void salvar() throws Exception{

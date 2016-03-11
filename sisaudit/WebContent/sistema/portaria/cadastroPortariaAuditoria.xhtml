@@ -19,17 +19,17 @@
 						<tr>
 							<td><p:outputLabel value="Código:" /></td>
 							<td><h:outputText
-									value="#{cadasroPortariaBean.auditoria.idauditoria}" /></td>
+									value="#{portariaWizardBean.auditoria.idauditoria}" /></td>
 						</tr>
 						<tr>
 							<td><p:outputLabel value="Título: " /></td>
 							<td><h:outputText id="titulo"
-									value="#{cadasroPortariaBean.auditoria.titulo}" /></td>
+									value="#{portariaWizardBean.auditoria.titulo}" /></td>
 						</tr>
 						<tr>
 							<td><p:outputLabel value="Objetivo: " /></td>
 							<td><h:outputText id="objetivo"
-									value="#{cadasroPortariaBean.auditoria.objetivo}" /></td>
+									value="#{portariaWizardBean.auditoria.objetivo}" /></td>
 						</tr>
 					</table>
 					<fieldset>
@@ -42,13 +42,13 @@
 							</tr>
 							<tr>
 								<td><p:calendar id="planInicio" pattern="dd/MM/yyyy"
-										value="#{cadasroPortariaBean.auditoria.planInicioPrev}"
+										value="#{portariaWizardBean.auditoria.planInicioPrev}"
 										locale="pt_BR" readonly="true" showOn="false" /></td>
 								<td><p:calendar id="planFim" pattern="dd/MM/yyyy"
-										value="#{cadasroPortariaBean.auditoria.planFimPrev}"
+										value="#{portariaWizardBean.auditoria.planFimPrev}"
 										locale="pt_BR" readonly="true" showOn="false" /></td>
 								<td><h:outputText id="planDiasUteis"
-										value="#{cadasroPortariaBean.auditoria.planDiasUteisPrev}" />
+										value="#{portariaWizardBean.auditoria.planDiasUteisPrev}" />
 								</td>
 							</tr>
 						</table>
@@ -63,13 +63,13 @@
 							</tr>
 							<tr>
 								<td><p:calendar id="execInicio" pattern="dd/MM/yyyy"
-										value="#{cadasroPortariaBean.auditoria.execInicioPrev}"
+										value="#{portariaWizardBean.auditoria.execInicioPrev}"
 										locale="pt_BR" readonly="true" showOn="false" /></td>
 								<td><p:calendar id="execFim" pattern="dd/MM/yyyy"
-										value="#{cadasroPortariaBean.auditoria.execFimPrev}"
+										value="#{portariaWizardBean.auditoria.execFimPrev}"
 										locale="pt_BR" readonly="true" showOn="false" /></td>
 								<td><h:outputText id="execDiasUteis"
-										value="#{cadasroPortariaBean.auditoria.execDiasUteisPrev}" />
+										value="#{portariaWizardBean.auditoria.execDiasUteisPrev}" />
 								</td>
 							</tr>
 						</table>
@@ -84,13 +84,13 @@
 							</tr>
 							<tr>
 								<td><p:calendar id="relaInicio" pattern="dd/MM/yyyy"
-										value="#{cadasroPortariaBean.auditoria.relaInicioPrev}"
+										value="#{portariaWizardBean.auditoria.relaInicioPrev}"
 										locale="pt_BR" readonly="true" showOn="false" /></td>
 								<td><p:calendar id="relaFim" pattern="dd/MM/yyyy"
-										value="#{cadasroPortariaBean.auditoria.relaFimPrev}"
+										value="#{portariaWizardBean.auditoria.relaFimPrev}"
 										locale="pt_BR" readonly="true" showOn="false" /></td>
 								<td><h:outputText id="relaDiasUteis"
-										value="#{cadasroPortariaBean.auditoria.relaDiasUteisPrev}" />
+										value="#{portariaWizardBean.auditoria.relaDiasUteisPrev}" />
 								</td>
 							</tr>
 						</table>
@@ -105,15 +105,15 @@
 				<h:form id="form" prependId="false">
 
 					<p:dataTable id="listaPortarias"
-						value="#{cadasroPortariaBean.auditoria.portariaList}" var="s"
-						emptyMessage="Nenhuma Portaria Enqontrada" rows="5"
+						value="#{portariaWizardBean.portariaList}" var="s"
+						emptyMessage="Nenhuma Portaria Encontrada" rows="5"
 						paginator="true" paginatorPosition="bottom"
 						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						currentPageReportTemplate="({currentPage} de {totalPages})">
 
-						<p:column headerText="No Portaria" width="10%">
+						<p:column headerText="No Portaria / Ano" width="10%">
 							<h:outputText style="font-weight: bold"
-								value="#{s.numeroPortaria}" />
+								value="#{s.numeroPortaria} / #{s.anoPortaria}" />
 						</p:column>
 						<p:column headerText="Objetivo" width="30%">
 							<h:outputText style="font-weight: bold" value="#{s.objetivo}" />
@@ -162,11 +162,11 @@
 						</p:column>
 						<p:column headerText="Opções" width="5%">
 							<p:commandButton icon="ui-icon-pencil"
-								action="#{cadasroPortariaBean.prepararEditPortaria(s)}"
+								action="#{portariaWizardBean.editarWizardPortaria(s)}"
 								title="Editar"></p:commandButton>
 							<p:commandButton process="@all" icon="ui-icon-trash"
-								action="#{cadasroPortariaBean.remover(s)}" title="Excluir"
-								oncomplete="popAprovar.hide(); #{cadasroPortariaBean.auditoria.portariaList}"></p:commandButton>
+								action="#{portariaWizardBean.remover(s)}" title="Excluir"
+								oncomplete="#{portariaWizardBean.portariaList}"></p:commandButton>
 						</p:column>
 
 					</p:dataTable>
@@ -174,7 +174,7 @@
 			</fieldset>
 			<h:form>
 				<p:commandButton value="Novo"
-					action="#{cadasroPortariaBean.prepararNovaPortaria()}"
+					action="#{portariaWizardBean.prepararNovaPortaria()}"
 					icon="ui-icon-disk" immediate="true" />
 				<p:commandButton value="Cancelar"
 					action="#{auditoriaBean.abrirListaAuditoria}" icon="ui-icon-close"

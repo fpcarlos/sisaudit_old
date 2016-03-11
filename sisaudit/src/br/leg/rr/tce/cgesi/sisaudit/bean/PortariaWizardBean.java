@@ -93,6 +93,8 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 	private boolean skip;
 
 	private boolean exibir;
+	
+	private transient String possuiAuditoria;
 
 	public PortariaWizardBean() {
 		super();
@@ -287,6 +289,23 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 		}
 		
 	}
+	
+	public String preparaCriarPortariaDaAuditoria(Auditoria aux){
+		try {
+			auditoria = new Auditoria();
+			auditoria = auditoriaEjb.carregarAuditoria(aux.getId());
+			
+			portariaList = new ArrayList<>();
+			portariaList = portariaEjb.findIdAuditoria(aux.getId());
+			
+			return redirect("/sistema/portaria/cadastroPortariaAuditoria.xhtml"); 
+			 
+		} catch (Exception e) {
+			e.printStackTrace();
+			showFacesMessage(e.getMessage(), 4);
+			return null;
+		}
+	}
 
 	public void salvarMinutaPortaria() {
 		try {
@@ -320,6 +339,14 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 			e.printStackTrace();
 			showFacesMessage(e.getMessage(), 4);
 		}
+	}
+	
+	public boolean mostraNaTela(){
+		boolean mostra = false;
+		if(possuiAuditoria.equals('2'))
+			mostra = true;
+		
+		return mostra;
 	}
 
 	public String onFlowProcess(FlowEvent event) {
@@ -535,6 +562,14 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 
 	public void setTipoAuditorList(List<TipoAuditor> tipoAuditorList) {
 		this.tipoAuditorList = tipoAuditorList;
+	}
+
+	public String getPossuiAuditoria() {
+		return possuiAuditoria;
+	}
+
+	public void setPossuiAuditoria(String possuiAuditoria) {
+		this.possuiAuditoria = possuiAuditoria;
 	}
 
 }
