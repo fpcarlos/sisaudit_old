@@ -1,7 +1,9 @@
 package br.leg.rr.tce.cgesi.sisaudit.bean;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +26,6 @@ import br.leg.rr.tce.cgesi.sisaudit.ejb.AuditoriaEjb;
 import br.leg.rr.tce.cgesi.sisaudit.ejb.EquipeFiscalizacaoEjb;
 import br.leg.rr.tce.cgesi.sisaudit.ejb.PortariaEjb;
 import br.leg.rr.tce.cgesi.sisaudit.ejb.ServidorEjb;
-import br.leg.rr.tce.cgesi.sisaudit.ejb.TipoAuditorEjb;
 import br.leg.rr.tce.cgesi.sisaudit.ejb.UnidadeGestoraPortariaEjb;
 import br.leg.rr.tce.cgesi.sisaudit.entity.Auditoria;
 import br.leg.rr.tce.cgesi.sisaudit.entity.EquipeFiscalizacao;
@@ -104,7 +105,7 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 
 		portaria.setMostraCampo(true);
 
-		portaria.setMostraCampo(true);
+		//portaria.setMostraCampo(true);
 		/*
 		 * Map<Integer, Portaria> mapPortaria = new HashMap<Integer,
 		 * Portaria>(); String listaId = ""; List<UnidadeGestoraPortaria>
@@ -252,6 +253,32 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 
 	public String abrirCadastroPortaria() {
 		try {
+			Date d = new Date();
+			SimpleDateFormat fd = new SimpleDateFormat("yyyy");
+			String year = fd.format(d);
+			portaria = new Portaria();
+			servidorAutoridadeList = new ArrayList<Servidor>();
+
+			unidadeGestoraDaAuditoria = new ArrayList<UnidadeGestora>();
+			unidadeGestoraSelecionadas = new ArrayList<UnidadeGestora>();
+			unidadeGestoraDaPortaria = new ArrayList<UnidadeGestora>();
+
+			tipoFiscalizacaoList = new ArrayList<TipoFiscalizacao>();
+			tipoFiscalizacaoList = sistemaBean.getTipoFiscalizacaoList();
+
+			unidadeFiscalizadoraList = new ArrayList<UnidadeFiscalizadora>();
+			unidadeFiscalizadoraList = sistemaBean.getUnidadeFiscalizadoraList();
+			
+			for (Servidor stemp : servidorEjb.findAll()) {
+				String vtipo = stemp.getAutoridade();
+				servidorList.add(stemp);
+				if (vtipo.contains("S"))
+					servidorAutoridadeList.add(stemp);
+			}
+			
+			portaria.setNumeroPortaria(StringUtils.padLeft(portariaEjb.ultimoNumeroPortaria(year), 3, '0'));
+			portaria.setAnoPortaria(year);
+			
 			return redirect("/sistema/portaria/cadastro/frmCadPortariaEtapa1.xhtml");	
 		} catch (Exception e) {
 			e.printStackTrace();
