@@ -11,8 +11,10 @@
 		<!-- 		<h:outputScript name="scripts.js" library="js" /> -->
 		<h:outputScript name="calendar_ptbr.js" library="js" />
 		<script type="text/javascript" src="/sisaudit/ckeditor/ckeditor.js"></script>
-        <script type="text/javascript" src="/sisaudit/ckeditor/adapters/jquery.js"></script>
-        <script type="text/javascript" src="/sisaudit/ckeditor/ckfinder/ckfinder.js"></script>        
+		<script type="text/javascript"
+			src="/sisaudit/ckeditor/adapters/jquery.js"></script>
+		<script type="text/javascript"
+			src="/sisaudit/ckeditor/ckfinder/ckfinder.js"></script>
 
 
 	</h:head>
@@ -35,11 +37,10 @@
 								library="images" height="40" width="30" /></td>
 						<td align="left" valign="middle">&nbsp;&nbsp;<h:outputText
 								value="#{msg['nome-sistema']}" styleClass="titulo-produto" /></td>
-						<td width="20%">
-						<h:outputText value="Usuário: " />
-						<h:outputText value="#{usuarioBean.mostraUser}" /> 						
-						<h:outputText value="#{usuarioBean.usuarioSelected.nome}"  />
-						<!-- <h:outputText value="#{usuarioBean.logon}" /> --> <br /></td>
+						<td width="20%"><h:outputText value="Usuário: " /> <h:outputText
+								value="#{usuarioBean.mostraUser}" /> <h:outputText
+								value="#{usuarioBean.usuarioSelected.nome}" /> <!-- <h:outputText value="#{usuarioBean.logon}" /> -->
+							<br /></td>
 						<td align="right"></td>
 					</tr>
 				</table>
@@ -50,6 +51,14 @@
 		</div>
 		<br />
 		<br />
+		<h:form id="formTemplet">
+			<p:confirmDialog global="true" showEffect="fade">
+				<p:commandButton value="Sim" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Não" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+		</h:form>
 		<div style="height: 200px">
 			<ui:insert name="content">Content</ui:insert>
 		</div>

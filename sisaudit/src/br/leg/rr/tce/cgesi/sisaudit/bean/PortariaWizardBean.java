@@ -25,6 +25,7 @@ import br.leg.rr.tce.cgesi.sisaudit.comum.util.Util;
 import br.leg.rr.tce.cgesi.sisaudit.ejb.AuditoriaEjb;
 import br.leg.rr.tce.cgesi.sisaudit.ejb.EquipeFiscalizacaoEjb;
 import br.leg.rr.tce.cgesi.sisaudit.ejb.PortariaEjb;
+import br.leg.rr.tce.cgesi.sisaudit.ejb.PortariasAndamentoEjb;
 import br.leg.rr.tce.cgesi.sisaudit.ejb.ServidorEjb;
 import br.leg.rr.tce.cgesi.sisaudit.ejb.UnidadeGestoraPortariaEjb;
 import br.leg.rr.tce.cgesi.sisaudit.entity.Auditoria;
@@ -70,6 +71,9 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 
 	@EJB
 	private ServidorEjb servidorEjb;
+	
+	@EJB
+	private PortariasAndamentoEjb portariasAndamentoEjb;
 
 	// Listas
 	private List<UnidadeGestora> unidadeGestoraLista = new ArrayList<UnidadeGestora>();
@@ -317,6 +321,8 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 
 	public void salvarMinutaPortaria() {
 		try {
+			portaria.addPortariasAndamento(portariasAndamentoEjb.pegaPortariasAndamentoPeloId(1));
+
 			portariaEjb.salvarMinuta(portaria);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -357,7 +363,7 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 		return mostra;
 	}
 
-	public String onFlowProcess(FlowEvent event) {
+	public String onFlowProcess(FlowEvent event) throws Exception {
 		if (skip) {
 			skip = false; // reset in case user goes back
 			return "confirm";
@@ -419,6 +425,27 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 		}
 
 	}
+	
+	//remove portaria
+		public String remover(Portaria aux){
+			try {
+				//Integer id = aux.getIdAuditoria();
+				portariaEjb.remove(aux);
+				showFacesMessage("portaria deletada com sucesso!!!", 2);
+				
+				portaria = new Portaria();
+				portariaList = new ArrayList<>();
+				portariaList = portariaEjb.listaPortaria();
+				//auditoria.setPortariaList(portariaEjb.findIdAuditoria(id));
+				return redirect("/sistema/portaria/listaPortarias.xhtml");
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				showFacesMessage(e.getMessage(), 4);
+				return null;
+			}
+		}
+
 
 	public Portaria getPortaria() {
 		return portaria;

@@ -53,5 +53,21 @@ public class PortariasAndamentoEjb extends AbstractEjb implements Serializable {
 		}
 
 	}
+	
+	public PortariasAndamento pegaPortariasAndamentoPeloId(Integer id) throws Exception{
+		try {
+			PortariasAndamento aux = entityManager.find(PortariasAndamento.class, id);
+			
+			return aux;
+			
+		} catch (RuntimeException re) {
+			re.printStackTrace();
+			throw new Exception(" Erro" + re.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception(" Erro" + e.getMessage());
+		}
+		
+	}
 
 }
