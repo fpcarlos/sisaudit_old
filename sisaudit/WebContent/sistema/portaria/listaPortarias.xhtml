@@ -50,14 +50,12 @@
 								title="Editar" escape="true" />
 								
 							<p:commandButton icon="ui-icon-trash"
-								action="#{portariaWizardBean.remover(s)}"
-								partialSubmit="true"
-								process="@this" escape="true">
-								
+								action="#{portariaWizardBean.remover(s)}">
+								 
 								<p:confirm header="Remover Portaria"
 									message="Tem certeza que deseja excluir a portaria?"
 									icon="ui-icon-alert" />
-									
+									 
 							</p:commandButton>
 							
 						</p:column>
