@@ -14,6 +14,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.hibernate.validator.internal.engine.messageinterpolation.parser.EscapedState;
 import org.primefaces.event.FlowEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
@@ -27,16 +28,20 @@ import br.leg.rr.tce.cgesi.sisaudit.ejb.EquipeFiscalizacaoEjb;
 import br.leg.rr.tce.cgesi.sisaudit.ejb.PortariaEjb;
 import br.leg.rr.tce.cgesi.sisaudit.ejb.PortariasAndamentoEjb;
 import br.leg.rr.tce.cgesi.sisaudit.ejb.ServidorEjb;
+import br.leg.rr.tce.cgesi.sisaudit.ejb.StatusPortariaEjb;
 import br.leg.rr.tce.cgesi.sisaudit.ejb.UnidadeGestoraPortariaEjb;
 import br.leg.rr.tce.cgesi.sisaudit.entity.Auditoria;
 import br.leg.rr.tce.cgesi.sisaudit.entity.EquipeFiscalizacao;
 import br.leg.rr.tce.cgesi.sisaudit.entity.Portaria;
+import br.leg.rr.tce.cgesi.sisaudit.entity.PortariasAndamento;
 import br.leg.rr.tce.cgesi.sisaudit.entity.Servidor;
+import br.leg.rr.tce.cgesi.sisaudit.entity.StatusPortaria;
 import br.leg.rr.tce.cgesi.sisaudit.entity.TipoAuditor;
 import br.leg.rr.tce.cgesi.sisaudit.entity.TipoFiscalizacao;
 import br.leg.rr.tce.cgesi.sisaudit.entity.UnidadeFiscalizadora;
 import br.leg.rr.tce.cgesi.sisaudit.entity.UnidadeGestoraAuditoria;
 import br.leg.rr.tce.cgesi.sisaudit.entity.UnidadeGestoraPortaria;
+import br.leg.rr.tce.cgesi.sisaudit.seguranca.bean.UsuarioBean;
 
 @Named
 @SessionScoped
@@ -47,6 +52,9 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 
 	@Inject
 	private transient SistemaBean sistemaBean;
+	
+	@Inject
+	private transient UsuarioBean usuarioBean;
 
 	@Inject
 	private Portaria portaria;
@@ -74,6 +82,9 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 	
 	@EJB
 	private PortariasAndamentoEjb portariasAndamentoEjb;
+	
+	@EJB
+	private StatusPortariaEjb statusPortariaEjb;
 
 	// Listas
 	private List<UnidadeGestora> unidadeGestoraLista = new ArrayList<UnidadeGestora>();
@@ -99,6 +110,8 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 	private boolean exibir;
 	
 	private transient String possuiAuditoria;
+	
+	private transient String nomeEvento;
 
 	public PortariaWizardBean() {
 		super();
@@ -283,6 +296,22 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 			unidadeFiscalizadoraList = new ArrayList<UnidadeFiscalizadora>();
 			unidadeFiscalizadoraList = sistemaBean.getUnidadeFiscalizadoraList();
 			
+			
+			
+			for (UnidadeGestora x : sistemaBean.getUnidadeGestoraList()) {
+				UnidadeGestoraPortaria unGP = new UnidadeGestoraPortaria();
+				unidadeGestoraDaAuditoria.add(x);
+				unGP.setPortaria(portaria);
+				unGP.setUnidadeGestora(x);
+				portaria.getListaUnidadeGestoraDaPortaria().add(unGP);
+			}
+			
+			for (UnidadeGestoraPortaria x : unidadeGestoraPortariaEjb.findIdPortaria(portaria.getId())) {
+				UnidadeGestora unG = new UnidadeGestora();
+				unG = sistemaBean.selecionarUnidadeGestora(x.getUnidadeGestora().getId());
+				unidadeGestoraSelecionadas.add(unG);
+			}
+			
 			for (Servidor stemp : servidorEjb.findAll()) {
 				String vtipo = stemp.getAutoridade();
 				servidorList.add(stemp);
@@ -321,7 +350,22 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 
 	public void salvarMinutaPortaria() {
 		try {
-			portaria.addPortariasAndamento(portariasAndamentoEjb.pegaPortariasAndamentoPeloId(1));
+			//portaria.addPortariasAndamento(portariasAndamentoEjb.pegaPortariasAndamentoPeloId(1));
+			StatusPortaria stPortaria = new StatusPortaria();
+			stPortaria=statusPortariaEjb.pegarStatusPortariaId(1);
+			
+			System.out.println(stPortaria);
+			
+			PortariasAndamento pAndamento = new PortariasAndamento();
+			
+			
+			pAndamento.setStatusDate(Util.hoje());
+			pAndamento.setStatusJustificativa(stPortaria.getNome());
+			pAndamento.setStatusPortaria(stPortaria);
+			pAndamento.setStatusUsr(usuarioBean.getMostraUser());
+			portaria.setPortariasAndamentos(new ArrayList<PortariasAndamento>());
+			portaria.addPortariasAndamento(pAndamento);
+
 
 			portariaEjb.salvarMinuta(portaria);
 		} catch (Exception e) {
@@ -378,6 +422,7 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 			if (event.getNewStep().equals("equipe") && !event.getOldStep().equals("resumo")) {
 				this.selecionandoUGP();
 			}
+			this.setNomeEvento(event.toString());
 
 			return event.getNewStep();
 		}
@@ -605,6 +650,14 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 
 	public void setPossuiAuditoria(String possuiAuditoria) {
 		this.possuiAuditoria = possuiAuditoria;
+	}
+
+	public String getNomeEvento() {
+		return nomeEvento;
+	}
+
+	public void setNomeEvento(String nomeEvento) {
+		this.nomeEvento = nomeEvento;
 	}
 
 }

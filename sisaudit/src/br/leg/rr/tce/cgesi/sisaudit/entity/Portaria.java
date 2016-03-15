@@ -23,7 +23,6 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import br.leg.rr.tce.cgesi.sisaudit.comum.entity.UnidadeGestora;
-import br.leg.rr.tce.cgesi.sisaudit.ejb.PortariaEjb;
 
 /**
  * The persistent class for the portaria database table.

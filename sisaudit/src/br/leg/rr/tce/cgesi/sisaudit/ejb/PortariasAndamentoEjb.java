@@ -35,7 +35,8 @@ public class PortariasAndamentoEjb extends AbstractEjb implements Serializable {
 
 
 	public void remove(PortariasAndamento entity) {
-		entityManager.remove(entity);
+		PortariasAndamento aux = entityManager.find(PortariasAndamento.class, entity.getId());
+		entityManager.remove(aux);
 	}
 
 	public List<PortariasAndamento> findAll() throws Exception {
