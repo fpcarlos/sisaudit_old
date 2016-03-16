@@ -24,16 +24,16 @@
 						<p:column headerText="Auditoria" width="5%">
 							<h:outputText style="font-weight: bold" value="#{s.idAuditoria}" />
 						</p:column>
-						
+
 						<p:column headerText="No Portaria" width="5%">
 							<h:outputText style="font-weight: bold"
 								value="#{s.numeroPortaria}" />
 						</p:column>
-						
+
 						<p:column headerText="Ano" width="5%">
 							<h:outputText style="font-weight: bold" value="#{s.anoPortaria}" />
 						</p:column>
-						
+
 						<p:column headerText="Sigla Jurisdicionado" width="20%">
 							<h:outputText style="font-weight: bold"
 								value="#{s.listaSiglaUnidadeGestoraDaPortaria}" />
@@ -42,25 +42,36 @@
 						<p:column headerText="Objetivo" width="50%">
 							<h:outputText style="font-weight: bold" value="#{s.objetivo}" />
 						</p:column>
-						
+
 						<p:column headerText="Opções" width="20%">
-						
+
 							<p:commandButton icon="ui-icon-pencil"
 								action="#{portariaWizardBean.editarWizardPortaria(s)}"
 								title="Editar" escape="true" />
-								
+
 							<p:commandButton icon="ui-icon-trash"
 								action="#{portariaWizardBean.remover(s)}">
-								 
+
 								<p:confirm header="Remover Portaria"
 									message="Tem certeza que deseja excluir a Portaria: #{s.numeroPortaria}/#{s.anoPortaria}?"
 									icon="ui-icon-alert" />
-									 
+
 							</p:commandButton>
-							
+							<!--  
+							<p:commandButton icon="ui-icon-document"
+								action="#{abrirDocx.getPegaDocx(s)}"
+								title="Editar" escape="true" />
+								 -->
+							<p:commandButton icon="ui-icon ui-icon-arrowthickstop-1-s"
+								ajax="false" title="Donwload"
+								actionListener="#{abrirDocx.getPegaDocx(s)}">
+								<p:fileDownload value="#{abrirDocx.file}" />
+							</p:commandButton>
+
+
 						</p:column>
 					</p:dataTable>
-					
+
 				</p:panelGrid>
 			</h:form>
 		</h:panelGroup>
