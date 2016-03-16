@@ -14,7 +14,6 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.hibernate.validator.internal.engine.messageinterpolation.parser.EscapedState;
 import org.primefaces.event.FlowEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
@@ -297,7 +296,42 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 			unidadeFiscalizadoraList = sistemaBean.getUnidadeFiscalizadoraList();
 			
 			
+			if(auditoria.getId()!=null){
+				Integer vaudi = auditoria.getId();
+				Auditoria auditoria = new Auditoria();
+				auditoria=auditoriaEjb.carregarAuditoria(vaudi);
+				portaria.setIdAuditoria(auditoria.getId());
+			}
 			
+			if (portaria.getIdAuditoria() != null) {
+				//auditoria = new Auditoria();
+				//auditoria = auditoriaEjb.carregarAuditoria(aux.getIdAuditoria());
+				
+				portaria.setAuditoria(auditoria);
+				for (UnidadeGestoraAuditoria x : portaria.getAuditoria().getUnidadeGestoraAuditorias()) {
+					UnidadeGestora unG = new UnidadeGestora();
+					UnidadeGestoraPortaria unGP = new UnidadeGestoraPortaria();
+					unG = x.getUnidadeGestora();
+					unidadeGestoraDaAuditoria.add(unG);
+					unGP.setPortaria(portaria);
+					unGP.setUnidadeGestora(unG);
+					portaria.getListaUnidadeGestoraDaPortaria().add(unGP);
+				}
+			} else {
+				for (UnidadeGestora x : sistemaBean.getUnidadeGestoraList()) {
+					UnidadeGestoraPortaria unGP = new UnidadeGestoraPortaria();
+					unidadeGestoraDaAuditoria.add(x);
+					unGP.setPortaria(portaria);
+					unGP.setUnidadeGestora(x);
+					portaria.getListaUnidadeGestoraDaPortaria().add(unGP);
+				}
+			}
+			for (UnidadeGestoraPortaria x : unidadeGestoraPortariaEjb.findIdPortaria(portaria.getId())) {
+				UnidadeGestora unG = new UnidadeGestora();
+				unG = sistemaBean.selecionarUnidadeGestora(x.getUnidadeGestora().getId());
+				unidadeGestoraSelecionadas.add(unG);
+			}
+			/*
 			for (UnidadeGestora x : sistemaBean.getUnidadeGestoraList()) {
 				UnidadeGestoraPortaria unGP = new UnidadeGestoraPortaria();
 				unidadeGestoraDaAuditoria.add(x);
@@ -311,7 +345,7 @@ public class PortariaWizardBean extends AbstractBean implements Serializable {
 				unG = sistemaBean.selecionarUnidadeGestora(x.getUnidadeGestora().getId());
 				unidadeGestoraSelecionadas.add(unG);
 			}
-			
+			*/
 			for (Servidor stemp : servidorEjb.findAll()) {
 				String vtipo = stemp.getAutoridade();
 				servidorList.add(stemp);

@@ -31,8 +31,14 @@ public class TipoFiscalizacaoEjb extends AbstractEjb implements Serializable{
 
 	}
 
-    public void remove(TipoFiscalizacao entity){
-    	entityManager.remove(entity);
+    public void remove(TipoFiscalizacao entity) throws Exception{
+    	try {
+    		TipoFiscalizacao aux = entityManager.find(TipoFiscalizacao.class, entity.getId());
+    		entityManager.remove(aux);
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
+    	
     }
 
     public List<TipoFiscalizacao> findAll()

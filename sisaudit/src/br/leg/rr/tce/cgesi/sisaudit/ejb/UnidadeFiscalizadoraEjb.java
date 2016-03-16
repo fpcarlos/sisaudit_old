@@ -14,17 +14,29 @@ public class UnidadeFiscalizadoraEjb extends AbstractEjb implements Serializable
 	private static final long serialVersionUID = 1L;
 	@PersistenceContext
 	private EntityManager entityManager;
-
-	public void create(UnidadeFiscalizadora entity){
-		entityManager.persist(entity);
+	
+	
+	public void salvar(UnidadeFiscalizadora entity) throws Exception{
+		try {
+			if(entity.getId()!=null && entity.getId()>0){
+				entityManager.merge(entity);
+			}else{
+				entityManager.persist(entity);	
+				
+			}
+			
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
 	}
-    
-    public void edit(UnidadeFiscalizadora entity){
-    	entityManager.merge(entity);
-    }
 
-    public void remove(UnidadeFiscalizadora entity){
-    	entityManager.remove(entity);
+	public void remove(UnidadeFiscalizadora entity) throws Exception{
+    	try {
+    		UnidadeFiscalizadora aux = entityManager.find(UnidadeFiscalizadora.class, entity.getId());
+    		entityManager.remove(aux);
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
     }
 
     public List<UnidadeFiscalizadora> findAll()

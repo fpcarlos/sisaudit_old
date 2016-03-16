@@ -28,13 +28,12 @@ public class UnidadeGestoraPortariaEjb extends AbstractEjb implements Serializab
 		}
 	}
 	
-	public void excluir(UnidadeGestoraPortaria entity){
+	public void excluir(UnidadeGestoraPortaria entity) throws Exception{
 		try {
-			//UnidadeGestoraAuditoria aux = entityManager.find(UnidadeGestoraAuditoria.class,entity.getId());
 			UnidadeGestoraPortaria aux = entityManager.find(UnidadeGestoraPortaria.class, entity.getId());
 			entityManager.remove(aux);
 		} catch (Exception e) {
-			// TODO: handle exception
+			throw new Exception(e.getMessage());
 		}
 	}
 	

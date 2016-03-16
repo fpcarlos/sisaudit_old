@@ -1,16 +1,12 @@
 package br.leg.rr.tce.cgesi.sisaudit.ejb;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import br.leg.rr.tce.cgesi.sisaudit.comum.entity.UnidadeGestora;
-import br.leg.rr.tce.cgesi.sisaudit.entity.Auditoria;
 import br.leg.rr.tce.cgesi.sisaudit.entity.CriteriosSelecao;
-import br.leg.rr.tce.cgesi.sisaudit.entity.UnidadeGestoraAuditoria;
 
 @Stateless
 public class CriteriosSelecaoEjb extends AbstractEjb implements Serializable {

@@ -34,8 +34,14 @@ public class TipoAuditorEjb extends AbstractEjb implements Serializable {
 	}
 
 
-	public void remove(TipoAuditor entity) {
-		entityManager.remove(entity);
+	public void remove(TipoAuditor entity) throws Exception {
+		try {
+			TipoAuditor aux = entityManager.find(TipoAuditor.class, entity.getId());
+			entityManager.remove(aux);
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
+		
 	}
 
 	public List<TipoAuditor> findAll() throws Exception {

@@ -117,9 +117,18 @@ public class PortariaEjb extends AbstractEjb implements Serializable {
 		
 	}
 
-	public Portaria pegarPortaria(Integer id) {
-		Portaria aux = entityManager.find(Portaria.class, id);
-		return aux;
+	public Portaria pegarPortaria(Integer id) throws Exception {
+		try {
+			Portaria aux = entityManager.find(Portaria.class, id);
+			return aux;
+			
+		} catch (RuntimeException re) {
+			re.printStackTrace();
+			throw new Exception(" Erro" + re.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception(" Erro" + e.getMessage());
+		}
 	}
 	/*
 	 * public Portaria iniciarPortiariaComAuditoria(Auditoria aux) throws

@@ -34,8 +34,14 @@ public class ServidorEjb extends AbstractEjb implements Serializable {
 	}
 
 
-	public void remove(Servidor entity) {
-		entityManager.remove(entity);
+	public void remove(Servidor entity) throws Exception {
+		try {
+			Servidor aux = entityManager.find(Servidor.class, entity.getId());
+			entityManager.remove(aux);	
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
+		
 	}
 
 	public List<Servidor> findAll() throws Exception {

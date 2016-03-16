@@ -40,7 +40,7 @@ public class AbrirDocx extends AbstractBean implements Serializable{
         }
     }
     
-    public void criarDocs(){
+    public void getCriarDocs(){
     	try {
     		   
     		   XWPFDocument document= new XWPFDocument(); 

@@ -15,11 +15,29 @@ public class UnidadeGestoraEjb extends AbstractEjb implements Serializable {
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	public void salvar(UnidadeGestora entity){
-		
+	public void salvar(UnidadeGestora entity) throws Exception{
+		try {
+			//comentario
+			//Unidade Gestora não pode sofrer alterações pelo sistema
+			//
+			if(entity.getId()!=null && entity.getId()>0){
+				//entityManager.merge(entity);
+			}else{				
+				//entityManager.persist(entity);					
+			}
+			
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
 	}
 
-    public void remove(UnidadeGestora entity){
+    public void remove(UnidadeGestora entity) throws Exception{
+    	try {
+    		//UnidadeGestora aux = entityManager.find(UnidadeGestora.class, entity.getId());
+        	//entityManager.remove(aux);
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
     	
     }
 

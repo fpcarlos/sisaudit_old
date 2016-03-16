@@ -28,15 +28,13 @@ public class UnidadeGestoraAuditoriaEjb extends AbstractEjb implements Serializa
 		}
 	}
 
-    public void remove(UnidadeGestoraAuditoria entity){
+    public void remove(UnidadeGestoraAuditoria entity) throws Exception{
     	try {
-    		//em.remove(em.find(clazz, key));
     		UnidadeGestoraAuditoria aux = entityManager.find(UnidadeGestoraAuditoria.class,entity.getId());
     		entityManager.remove(aux);
 		} catch (Exception e) {
-			// TODO: handle exception
+			throw new Exception(e.getMessage());
 		}
-    	//entityManager.remove(entity);
     }
     
     

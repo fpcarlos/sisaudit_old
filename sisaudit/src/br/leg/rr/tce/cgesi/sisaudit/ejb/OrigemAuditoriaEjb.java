@@ -30,8 +30,14 @@ public class OrigemAuditoriaEjb extends AbstractEjb implements Serializable{
 	
 	}
 
-	public void remove(OrigemAuditoria entity){
-    	entityManager.remove(entity);
+	public void remove(OrigemAuditoria entity) throws Exception{
+		try {
+			OrigemAuditoria aux = entityManager.find(OrigemAuditoria.class, entity.getId());
+			entityManager.remove(aux);	
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
+    	
     }
 
 	public List<OrigemAuditoria> findAll() throws Exception {
