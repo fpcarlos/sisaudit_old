@@ -254,14 +254,20 @@ public class Portaria implements Serializable {
 	public String getListaSiglaUnidadeGestoraDaPortaria() {
 		String temp = "";
 		Integer nId = this.getId();
+		Integer nItem, nX=0;
 		
 		//listaUnidadeGestoraDaPortaria = this.getListaUnidadeGestoraDaPortaria();
 
 		// if(!listaUnidadeGestoraDaPortaria.isEmpty()){
+		nItem=this.unidadeGestoraPortarias.size();
 
 		for (UnidadeGestoraPortaria ptemp : this.unidadeGestoraPortarias) {
+			nX++;
 			if (temp.length() > 0) {
-				temp = temp + ", " + ptemp.getUnidadeGestora().getSigla();
+				if(nItem==nX)
+					temp = temp + " e " + ptemp.getUnidadeGestora().getSigla();
+				else
+					temp = temp + ", " + ptemp.getUnidadeGestora().getSigla();				
 			} else {
 				temp = ptemp.getUnidadeGestora().getSigla();
 			}

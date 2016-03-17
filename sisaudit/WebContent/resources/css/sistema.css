@@ -3,6 +3,9 @@
 .ui-widget,.ui-widget .ui-widget {
   font-size: 90% !important;
 }
+.ui-widget .ui-icon-docx {
+    background-image: url(images/icon_docx.png);
+}
 
 #page {
   width: 1000px; margin: 0 auto;

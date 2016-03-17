@@ -43,6 +43,7 @@ public class GerarPortariaBean extends AbstractBean implements Serializable {
 
 	public void mesclarPortariaComModelo(Portaria aux) throws Exception {
 		String filePath = "G:\\difip\\Teste.doc";
+		String tipoArq="doc";
 		POIFSFileSystem fs = null;
 		Portaria portaria = new Portaria();
 		portaria = portariaEjb.pegarPortaria(aux.getId());
@@ -69,7 +70,7 @@ public class GerarPortariaBean extends AbstractBean implements Serializable {
 			// #DATAATUAL#
 			range.replaceText("#DATAATUAL#", Util.hoje().toString());
 
-			saveWord(filePath, doc);
+			saveWord(filePath, doc, tipoArq);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -88,13 +89,13 @@ public class GerarPortariaBean extends AbstractBean implements Serializable {
 	 * (text.contains(findText)) { run.replaceText(findText, replaceText); } } }
 	 * } return doc; }
 	 */
-	private void saveWord(String filePath, HWPFDocument doc) throws FileNotFoundException, IOException {
+	private void saveWord(String filePath, HWPFDocument doc, String tipoArq) throws FileNotFoundException, IOException {
 		FileOutputStream out = null;
 		try {
 			String filePath2 = "G:\\difip\\Teste200.doc";
 			out = new FileOutputStream(filePath2);			
 			doc.write(out);
-			downloadPortaria(filePath2,"doc");
+			downloadPortaria(filePath2, tipoArq);
 		} finally {
 			out.close();
 		}
@@ -108,6 +109,8 @@ public class GerarPortariaBean extends AbstractBean implements Serializable {
 			FileInputStream stream = new FileInputStream(f);
 			if(tipoArq=="doc")
 				file = new DefaultStreamedContent(stream, "application/vnd.ms-word", "Portaria.doc");
+			if(tipoArq=="pdf")
+				file = new DefaultStreamedContent(stream, "application/pdf", "Portaria.pdf");
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

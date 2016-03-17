@@ -57,17 +57,12 @@
 									icon="ui-icon-alert" />
 
 							</p:commandButton>
-							<!--  
-							<p:commandButton icon="ui-icon-document"
-								action="#{abrirDocx.getPegaDocx(s)}"
-								title="Editar" escape="true" />
-								 -->
-							<p:commandButton icon="ui-icon ui-icon-arrowthickstop-1-s"
+							<p:commandButton icon="ui-icon ui-icon-docx"
 								ajax="false" title="Donwload"
 								actionListener="#{gerarPortariaBean.mesclarPortariaComModelo(s)}">
 								<p:fileDownload value="#{gerarPortariaBean.file}" />
 							</p:commandButton>
-
+							
 
 						</p:column>
 					</p:dataTable>
