@@ -10,15 +10,20 @@ import java.text.SimpleDateFormat;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
 
 import org.apache.poi.hwpf.HWPFDocument;
-import org.apache.poi.hwpf.usermodel.Range;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.XWPFTable;
+import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
-import br.leg.rr.tce.cgesi.sisaudit.comum.util.Util;
 import br.leg.rr.tce.cgesi.sisaudit.ejb.AuditoriaEjb;
 import br.leg.rr.tce.cgesi.sisaudit.ejb.PortariaEjb;
 import br.leg.rr.tce.cgesi.sisaudit.entity.Portaria;
@@ -42,35 +47,59 @@ public class GerarPortariaBean extends AbstractBean implements Serializable {
 	}
 
 	public void mesclarPortariaComModelo(Portaria aux) throws Exception {
-		String filePath = "G:\\difip\\Teste.doc";
-		String tipoArq="doc";
+		
+		
+		//FacesContext context = FacesContext.getCurrentInstance();
+
+		//InputStream reportStream = context.getExternalContext()
+		//		.getResourceAsStream("/resources/relatorios/recibo.jasper");
+
+		ServletContext servletContext = (ServletContext) FacesContext
+				.getCurrentInstance().getExternalContext().getContext();
+
+		String filePath = servletContext
+				.getRealPath("/resources/modeloDocs/Teste.docx");
+		//response.setContentType("application/pdf");
+		
+		
+		//String filePath = pathSubRel;
+		//"G:\\difip\\Teste.docx";
 		POIFSFileSystem fs = null;
+		String tipoArq = "docx";
 		Portaria portaria = new Portaria();
 		portaria = portariaEjb.pegarPortaria(aux.getId());
 		SimpleDateFormat fd = new SimpleDateFormat("dd/MM/yyyy");
 		try {
-			fs = new POIFSFileSystem(new FileInputStream(filePath));
-			HWPFDocument doc = new HWPFDocument(fs);
-			Range range = doc.getRange();
-			range.replaceText("#NUMEROANOPORTARIA#", portaria.getNumeroPortaria() + "/" + portaria.getAnoPortaria());
-			if (portaria.getTipoFiscalizacao().getId() != null)
-				range.replaceText("#TIPOAUDITORIA#", portaria.getTipoFiscalizacao().getNome());
-			else
-				range.replaceText("#TIPOAUDITORIA#", "TIPO DA AUDITORIA NAO FOI DEFINIDO");
-			// #ListaUG
-			range.replaceText("#LISTAUG#", portaria.getListaSiglaUnidadeGestoraDaPortaria());
-			// #PlanInicio
-			// String PlanInicio = fd.format(portaria.getPlanInicio());
-			range.replaceText("#PLANINICIO#", fd.format(portaria.getPlanInicio()));
-			// #RelFim
-			// String RelFim = fd.format(portaria.getRelaFim());
-			range.replaceText("#RELFIM#", fd.format(portaria.getRelaFim()));
-			// #Objetivo
-			range.replaceText("#OBJETIVO#", portaria.getObjetivo());
-			// #DATAATUAL#
-			range.replaceText("#DATAATUAL#", Util.hoje().toString());
+	        XWPFDocument doc = new XWPFDocument(new FileInputStream(filePath));
+	        
+	        
+	        //doc.
+	        
+			//create table
+	        XWPFTable table    = doc.createTable();
+	        XWPFParagraph para = doc.createParagraph();
+	        XWPFRun run        = para.createRun();
+	        
+	        run.setText("Hi");
+	        //create first row
+	        XWPFTableRow tableRowOne = table.getRow(0);
+	        tableRowOne.getCell(0).setText("col one, row one");
+	        tableRowOne.addNewTableCell().setText("col two, row one");
+	        tableRowOne.addNewTableCell().setText("col three, row one");
+	        //create second row
+	        XWPFTableRow tableRowTwo = table.createRow();
+	        tableRowTwo.getCell(0).setText("col one, row two");
+	        tableRowTwo.getCell(1).setText("col two, row two");
+	        tableRowTwo.getCell(2).setText("col three, row two");
+	        //create third row
+	        XWPFTableRow tableRowThree = table.createRow();
+	        tableRowThree.getCell(0).setText("col one, row three");
+	        tableRowThree.getCell(1).setText("col two, row three");
+	        tableRowThree.getCell(2).setText("col three, row three");
 
-			saveWord(filePath, doc, tipoArq);
+	        run.setText("Bye");
+
+			saveDocx(filePath, doc, tipoArq);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -78,22 +107,30 @@ public class GerarPortariaBean extends AbstractBean implements Serializable {
 		}
 	}
 
-	/*
-	 * private HWPFDocument replaceText(HWPFDocument doc, String findText,
-	 * String replaceText) { Range r1 = doc.getRange();
-	 * 
-	 * for (int i = 0; i < r1.numSections(); ++i) { Section s =
-	 * r1.getSection(i); for (int x = 0; x < s.numParagraphs(); x++) { Paragraph
-	 * p = s.getParagraph(x); for (int z = 0; z < p.numCharacterRuns(); z++) {
-	 * CharacterRun run = p.getCharacterRun(z); String text = run.text(); if
-	 * (text.contains(findText)) { run.replaceText(findText, replaceText); } } }
-	 * } return doc; }
-	 */
 	private void saveWord(String filePath, HWPFDocument doc, String tipoArq) throws FileNotFoundException, IOException {
 		FileOutputStream out = null;
 		try {
 			String filePath2 = "G:\\difip\\Teste200.doc";
-			out = new FileOutputStream(filePath2);			
+			out = new FileOutputStream(filePath2);
+			doc.write(out);
+			downloadPortaria(filePath2, tipoArq);
+		} finally {
+			out.close();
+		}
+	}
+	
+	private void saveDocx(String filePath, XWPFDocument doc, String tipoArq) throws FileNotFoundException, IOException {
+		FileOutputStream out = null;
+		ServletContext servletContext = (ServletContext) FacesContext
+				.getCurrentInstance().getExternalContext().getContext();
+
+		String filePath2  = servletContext
+				.getRealPath("/resources/modeloDocs/Teste2.docx");
+		
+		
+		try {
+			//String filePath2 = "G:\\difip\\Teste200x.doc";
+			out = new FileOutputStream(filePath2);
 			doc.write(out);
 			downloadPortaria(filePath2, tipoArq);
 		} finally {
@@ -101,17 +138,16 @@ public class GerarPortariaBean extends AbstractBean implements Serializable {
 		}
 	}
 
-	
 	public void downloadPortaria(String nomeArq, String tipoArq) {
 		File f = new File(nomeArq);
 
 		try {
 			FileInputStream stream = new FileInputStream(f);
-			if(tipoArq=="doc")
+			if (tipoArq == "doc")
 				file = new DefaultStreamedContent(stream, "application/vnd.ms-word", "Portaria.doc");
-			if(tipoArq=="pdf")
-				file = new DefaultStreamedContent(stream, "application/pdf", "Portaria.pdf");
-			
+			if (tipoArq == "docx")
+				file = new DefaultStreamedContent(stream, "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml", "Portaria.docx");
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
