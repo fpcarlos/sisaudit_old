@@ -34,7 +34,7 @@ public class AbrirDocx extends AbstractBean implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+/*
 	@EJB
 	private AuditoriaEjb auditoriaEjb;
 
@@ -167,7 +167,7 @@ public class AbrirDocx extends AbstractBean implements Serializable {
 			out.close();
 		}
 	}
-
+*/
 	/*
 	 * public void getAbrir() { try { if (!arquivo.exists())
 	 * arquivo.createNewFile(); } catch (Exception e) { System.out.println(
@@ -198,7 +198,7 @@ public class AbrirDocx extends AbstractBean implements Serializable {
 	 * } catch (Exception e) { e.printStackTrace();
 	 * System.out.println(e.getMessage()); } }
 	 */
-
+/*
 	public StreamedContent getFile() {
 		return file;
 	}
@@ -206,5 +206,5 @@ public class AbrirDocx extends AbstractBean implements Serializable {
 	public void setFile(StreamedContent file) {
 		this.file = file;
 	}
-
+*/
 }
