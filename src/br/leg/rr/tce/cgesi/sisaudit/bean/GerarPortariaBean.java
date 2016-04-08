@@ -15,8 +15,13 @@ import javax.inject.Named;
 import javax.servlet.ServletContext;
 
 import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.usermodel.CharacterRun;
+import org.apache.poi.hwpf.usermodel.Paragraph;
 import org.apache.poi.hwpf.usermodel.Range;
+import org.apache.poi.hwpf.usermodel.Table;
+import org.apache.poi.hwpf.usermodel.TableCell;
 import org.apache.poi.hwpf.usermodel.TableProperties;
+import org.apache.poi.hwpf.usermodel.TableRow;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -62,12 +67,6 @@ public class GerarPortariaBean extends AbstractBean implements Serializable {
 			fs = new POIFSFileSystem(new FileInputStream(filePath));
 			HWPFDocument doc = new HWPFDocument(fs);
 			Range range = doc.getRange();
-	        //Paragraph para = null;
-	        //CharacterRun run = null;
-	        //TableProperties tableProps = null;
-	        //Table table = null;
-	        //TableRow row = null;
-	        //TableCell cell = null;
 			range.replaceText("#NUMEROANOPORTARIA#", portaria.getNumeroPortaria() + "/" + portaria.getAnoPortaria());
 			if (portaria.getTipoFiscalizacao().getId() != null)
 				range.replaceText("#TIPOAUDITORIA#", portaria.getTipoFiscalizacao().getNome());
@@ -87,18 +86,6 @@ public class GerarPortariaBean extends AbstractBean implements Serializable {
 			range.replaceText("#DATAATUAL#", Util.hoje().toString());
 			// range.replaceText("#TABELASERVIDORES#", table);
 			
-			/*
-            table = new TableProperties(3);
-            for(int i = 0; i < 3; i++) {
-                row = table.getRow(i);
-                for(int j = 0; j < 3; j++) {
-                    cell = row.getCell(j);
-                    para = cell.getParagraph(0);
-                    run = para.getCharacterRun(0);
-                    run.insertBefore("How about inserting the text beforethe run?");
-                }
-            }
-*/
 			saveWord(filePath, doc, tipoArq);
 
 		} catch (FileNotFoundException e) {
