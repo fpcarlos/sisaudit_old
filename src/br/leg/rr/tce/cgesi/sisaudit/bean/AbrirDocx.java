@@ -100,7 +100,7 @@ public class AbrirDocx extends AbstractBean implements Serializable {
 	}
 
 	public void mesclarPortariaComModelo2(Portaria aux) throws Exception {
-		String filePath = "+G:\\difip\\Teste.doc";
+		String filePath = "G:\\difip\\Teste.doc";
 		String tipoArq = "doc";
 		POIFSFileSystem fs = null;
 		Portaria portaria = new Portaria();
@@ -114,7 +114,7 @@ public class AbrirDocx extends AbstractBean implements Serializable {
 			if (portaria.getTipoFiscalizacao().getId() != null)
 				range.replaceText("#TIPOAUDITORIA#", portaria.getTipoFiscalizacao().getNome());
 			else
-				range.replaceText("#TIPOAUDITORIA#", "TIPO DA AUDITORIA NAO FOI DEFINIDO");
+				range.replaceText("#TIPOAUDITORIA#", "TIPO DA AUDITORIA NÃO FOI DEFINIDO");
 			// #ListaUG
 			range.replaceText("#LISTAUG#", portaria.getListaSiglaUnidadeGestoraDaPortaria());
 			// #PlanInicio
@@ -129,7 +129,7 @@ public class AbrirDocx extends AbstractBean implements Serializable {
 			range.replaceText("#DATAATUAL#", Util.hoje().toString());
 			// range.replaceText("#TABELASERVIDORES#", table);
 
-			//saveWord(filePath, doc, tipoArq);
+			saveWord(filePath, doc);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
